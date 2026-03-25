@@ -12,7 +12,12 @@ interface CrudDialogProps {
   children: React.ReactNode;
 }
 
-export default function CrudDialog({ open, onOpenChange, title, children }: CrudDialogProps) {
+export default function CrudDialog({
+  open,
+  onOpenChange,
+  title,
+  children,
+}: CrudDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">

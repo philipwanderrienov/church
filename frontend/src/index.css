@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap");
 
 @layer base {
   :root {
@@ -51,8 +51,8 @@
     --navy-light: 220 20% 25%;
     --cream: 40 20% 97%;
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Source Sans 3', sans-serif;
+    --font-display: "Playfair Display", serif;
+    --font-body: "Source Sans 3", sans-serif;
   }
 
   .dark {
@@ -88,7 +88,12 @@
     font-family: var(--font-body);
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
   }
 }
@@ -104,7 +109,11 @@
   }
 
   .gold-gradient {
-    background: linear-gradient(135deg, hsl(var(--gold)) 0%, hsl(var(--gold-light)) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gold)) 0%,
+      hsl(var(--gold-light)) 100%
+    );
   }
 
   .section-divider {

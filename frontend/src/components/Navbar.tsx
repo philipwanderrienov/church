@@ -55,10 +55,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
         </ul>
 
         {/* Mobile toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="lg:hidden text-cream"
-        >
+        <button onClick={() => setOpen(!open)} className="lg:hidden text-cream">
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>

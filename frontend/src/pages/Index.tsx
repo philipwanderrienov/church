@@ -6,12 +6,48 @@ import heroImage from "@/assets/church-hero.jpg";
 import { seedIfEmpty } from "@/lib/store";
 
 const weeklyActivities = [
-  { icon: BookOpen, day: "Sunday", time: "09:00 AM", title: "Sunday Worship Service", description: "Main worship service with sermon and praise" },
-  { icon: Users, day: "Tuesday", time: "06:00 PM", title: "Congregational Bible Study", description: "Sectoral bible study groups gathering" },
-  { icon: Heart, day: "Wednesday", time: "05:30 PM", title: "Women's Fellowship", description: "Women's prayer and fellowship meeting" },
-  { icon: Music, day: "Thursday", time: "07:00 PM", title: "Choir Rehearsal", description: "Weekly choir practice and worship preparation" },
-  { icon: Users, day: "Friday", time: "06:00 PM", title: "Youth Fellowship", description: "Youth gathering with praise, games, and devotion" },
-  { icon: BookOpen, day: "Saturday", time: "04:00 PM", title: "Sunday School Preparation", description: "Teachers preparing for Sunday School lessons" },
+  {
+    icon: BookOpen,
+    day: "Sunday",
+    time: "09:00 AM",
+    title: "Sunday Worship Service",
+    description: "Main worship service with sermon and praise",
+  },
+  {
+    icon: Users,
+    day: "Tuesday",
+    time: "06:00 PM",
+    title: "Congregational Bible Study",
+    description: "Sectoral bible study groups gathering",
+  },
+  {
+    icon: Heart,
+    day: "Wednesday",
+    time: "05:30 PM",
+    title: "Women's Fellowship",
+    description: "Women's prayer and fellowship meeting",
+  },
+  {
+    icon: Music,
+    day: "Thursday",
+    time: "07:00 PM",
+    title: "Choir Rehearsal",
+    description: "Weekly choir practice and worship preparation",
+  },
+  {
+    icon: Users,
+    day: "Friday",
+    time: "06:00 PM",
+    title: "Youth Fellowship",
+    description: "Youth gathering with praise, games, and devotion",
+  },
+  {
+    icon: BookOpen,
+    day: "Saturday",
+    time: "04:00 PM",
+    title: "Sunday School Preparation",
+    description: "Teachers preparing for Sunday School lessons",
+  },
 ];
 
 export default function Index() {
@@ -67,7 +103,8 @@ export default function Index() {
               Weekly Activities
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Join us throughout the week for worship, fellowship, and spiritual growth.
+              Join us throughout the week for worship, fellowship, and spiritual
+              growth.
             </p>
           </div>
 
@@ -86,7 +123,9 @@ export default function Index() {
                     <activity.icon className="h-5 w-5 text-gold" />
                   </div>
                   <div>
-                    <span className="text-sm font-semibold text-gold">{activity.day}</span>
+                    <span className="text-sm font-semibold text-gold">
+                      {activity.day}
+                    </span>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Clock className="h-3 w-3" />
                       {activity.time}
@@ -96,7 +135,9 @@ export default function Index() {
                 <h3 className="font-display text-lg font-semibold text-foreground mb-2">
                   {activity.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">{activity.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {activity.description}
+                </p>
               </motion.div>
             ))}
           </div>
