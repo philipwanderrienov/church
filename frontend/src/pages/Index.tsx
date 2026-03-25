@@ -78,12 +78,12 @@ export default function Index() {
           <div className="section-divider mx-auto mb-6" />
           <h1 className="font-display text-5xl md:text-7xl font-bold text-cream mb-6 leading-tight">
             Welcome to <br />
-            <span className="text-gold">HKBP Church</span>
+            <span className="text-gold">GKPS Tangerang</span>
           </h1>
           <p className="font-body text-cream/80 text-lg md:text-xl max-w-2xl mx-auto mb-8">
-            "For where two or three gather in my name, there am I with them."
+            "GAREJA NA SARI, MARTRANGKUPAS, JANAH SIBOAN PASU-PASU"
             <br />
-            <span className="text-gold-light italic">— Matthew 18:20</span>
+            <span className="text-gold-light italic">— Parambilan 9:10</span>
           </p>
           <a
             href="#activities"

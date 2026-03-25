@@ -32,7 +32,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
         <Link to="/" className="flex items-center gap-2">
           <Church className="h-7 w-7 text-gold" />
           <span className="font-display text-xl font-bold text-cream">
-            HKBP Church
+            GKPS Tangerang
           </span>
         </Link>
 
