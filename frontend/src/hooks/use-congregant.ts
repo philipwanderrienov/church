@@ -7,11 +7,44 @@ import {
 import { congregantApi } from "@/api/congregant";
 import type { Congregant } from "@/lib/store";
 
+// Helper to convert sql.NullString objects to strings
+const transformCongregant = (data: any): Congregant => {
+  return {
+    id: data.id || "",
+    fullName: data.fullname || "",
+    gender: (data.gender?.String || data.gender || "Male") as "Male" | "Female",
+    dateOfBirth: data.dateofbirth?.String || data.dateofbirth || "",
+    phone: data.phone?.String || data.phone || "",
+    email: data.email?.String || data.email || "",
+    address: data.address?.String || data.address || "",
+    maritalStatus: (data.maritalstatus?.String ||
+      data.maritalstatus ||
+      "Single") as any,
+    familyCardNumber:
+      data.familycardnumber?.String || data.familycardnumber || "",
+    classSector: data.classsector?.String || data.classsector || "",
+    rayon: data.rayon?.String || data.rayon || "",
+    joinDate: data.joindate?.String || data.joindate || "",
+    photo: data.photo?.String || data.photo,
+  };
+};
+
 export const useCongregants = () => {
   return useQuery({
     queryKey: ["congregations"],
-    queryFn: () => congregantApi.getAll(),
-    select: (data) => data.data as Congregant[],
+    queryFn: async () => {
+      try {
+        const response = await congregantApi.getAll();
+        // response is full axios response object
+        // response.data = { message, data: [...], total }
+        // response.data.data = array of congregants
+        const congregants = response.data.data;
+        return congregants.map(transformCongregant);
+      } catch (error) {
+        console.error("Error fetching congregants:", error);
+        throw error;
+      }
+    },
   });
 };
 

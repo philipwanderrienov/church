@@ -81,7 +81,7 @@ export default function Index() {
             <span className="text-gold">GKPS Tangerang</span>
           </h1>
           <p className="font-body text-cream/80 text-lg md:text-xl max-w-2xl mx-auto mb-8">
-            "GAREJA NA SARI, MARTRANGKUPAS, JANAH SIBOAN PASU-PASU"
+            "GAREJA NA SARI, MARTANGKUPAS, JANAH SIBOAN PASU-PASU"
             <br />
             <span className="text-gold-light italic">— Parambilan 9:10</span>
           </p>
@@ -89,7 +89,7 @@ export default function Index() {
             href="#activities"
             className="inline-block gold-gradient text-primary font-semibold px-8 py-3 rounded-md hover:opacity-90 transition-opacity"
           >
-            View Weekly Schedule
+            Lihat Jadwal Mingguan
           </a>
         </motion.div>
       </section>
@@ -100,7 +100,7 @@ export default function Index() {
           <div className="text-center mb-16">
             <div className="section-divider mx-auto mb-4" />
             <h2 className="font-display text-4xl font-bold text-foreground mb-4">
-              Weekly Activities
+              Jadwal Kegiatan Mingguan
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               Join us throughout the week for worship, fellowship, and spiritual

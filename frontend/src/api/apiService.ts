@@ -11,7 +11,7 @@ const apiClient = axios.create({
 
 // Optional: Add interceptors untuk token, error handling, dll
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error) => {
     console.error("API Error:", error);
     throw error;

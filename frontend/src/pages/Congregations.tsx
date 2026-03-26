@@ -54,20 +54,37 @@ export default function Congregations() {
   // useEffect(load, []);
 
   // Filter data dari backend
-  const filtered = data.filter((c) =>
-    c.fullName.toLowerCase().includes(search.toLowerCase()) ||
-    c.classSector.toLowerCase().includes(search.toLowerCase()) ||
-    c.rayon.toLowerCase().includes(search.toLowerCase())
+  const filtered = data.filter(
+    (c) =>
+      String(c.fullName || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      String(c.classSector || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      String(c.rayon || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()),
   );
 
   // Tampilkan loading state
   if (isLoading) {
-    return <PageLayout><div className="text-center py-12">Loading...</div></PageLayout>;
+    return (
+      <PageLayout>
+        <div className="text-center py-12">Loading...</div>
+      </PageLayout>
+    );
   }
 
   // Tampilkan error state
   if (error) {
-    return <PageLayout><div className="text-center py-12 text-red-500">Failed to load data</div></PageLayout>;
+    return (
+      <PageLayout>
+        <div className="text-center py-12 text-red-500">
+          Failed to load data
+        </div>
+      </PageLayout>
+    );
   }
 
   const openCreate = () => {
@@ -110,7 +127,7 @@ export default function Congregations() {
       toast.error("Name is required");
       return;
     }
-    
+
     if (editing) {
       updateMutation.mutate({ id: editing.id, data: form });
     } else {
