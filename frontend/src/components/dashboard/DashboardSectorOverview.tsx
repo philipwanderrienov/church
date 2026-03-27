@@ -52,7 +52,9 @@ export default function DashboardSectorOverview() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h3 className="font-semibold text-slate-900">{sector.sector}</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    {sector.sector}
+                  </h3>
                   <p className="mt-1 text-sm text-slate-500">
                     Koordinator: {sector.coordinator}
                   </p>

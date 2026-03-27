@@ -17,11 +17,18 @@ const pmj = dashboardData.pmj ?? [];
 
 function joinNames(items: { name: string }[], max = 2) {
   if (items.length === 0) return "";
-  const names = items.slice(0, max).map((item) => item.name).join(", ");
-  return items.length > max ? `${names}, +${items.length - max} lainnya` : names;
+  const names = items
+    .slice(0, max)
+    .map((item) => item.name)
+    .join(", ");
+  return items.length > max
+    ? `${names}, +${items.length - max} lainnya`
+    : names;
 }
 
-export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverviewProps) {
+export function DashboardHeroOverview({
+  role = "Jemaat",
+}: DashboardHeroOverviewProps) {
   return (
     <section className="grid gap-4 lg:grid-cols-12">
       <Card className="overflow-hidden rounded-2xl border-slate-200 bg-white shadow-sm lg:col-span-7">
@@ -41,7 +48,8 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                   {/* Ringkasan cepat untuk membantu {role.toLowerCase()} memantau bacaan Alkitab
                   mingguan, petugas full timer, dan koordinasi PMJ dalam satu tampilan yang
                   ringkas. */}
-                  Gabe gareja na matoras mambobai kuria gabe angkula ni Kristus na mangoluh
+                  Gabe gareja na matoras mambobai kuria gabe angkula ni Kristus
+                  na mangoluh
                 </p>
               </div>
             </div>
@@ -57,11 +65,13 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 <BookOpen className="h-4 w-4 text-emerald-600" />
                 Bacaan Minggu Ini
               </div>
-              <div className="text-sm font-semibold text-slate-900">{weeklyReading.title}</div>
+              <div className="text-sm font-semibold text-slate-900">
+                {weeklyReading.title}
+              </div>
               <div className="mt-1 text-xs leading-5 text-slate-600">
                 {weeklyReading.passages.length > 0
-                  ? weeklyReading.passages.join(' · ')
-                  : 'Belum ada bacaan yang tersedia.'}
+                  ? weeklyReading.passages.join(" · ")
+                  : "Belum ada bacaan yang tersedia."}
               </div>
             </div>
 
@@ -71,12 +81,14 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 Petugas Full Timer
               </div>
               <div className="text-sm font-semibold text-slate-900">
-                {fullTimers.length > 0 ? `${fullTimers.length} petugas aktif` : 'Belum ada petugas'}
+                {fullTimers.length > 0
+                  ? `${fullTimers.length} petugas aktif`
+                  : "Belum ada petugas"}
               </div>
               <div className="mt-1 text-xs leading-5 text-slate-600">
                 {fullTimers.length > 0
                   ? joinNames(fullTimers)
-                  : 'Data petugas full timer akan tampil di sini.'}
+                  : "Data petugas full timer akan tampil di sini."}
               </div>
             </div>
 
@@ -86,10 +98,12 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 PMJ
               </div>
               <div className="text-sm font-semibold text-slate-900">
-                {pmj.length > 0 ? `${pmj.length} anggota` : 'Belum ada anggota'}
+                {pmj.length > 0 ? `${pmj.length} anggota` : "Belum ada anggota"}
               </div>
               <div className="mt-1 text-xs leading-5 text-slate-600">
-                {pmj.length > 0 ? joinNames(pmj) : 'Daftar PMJ ringkas untuk dashboard akan ditampilkan di sini.'}
+                {pmj.length > 0
+                  ? joinNames(pmj)
+                  : "Daftar PMJ ringkas untuk dashboard akan ditampilkan di sini."}
               </div>
             </div>
           </div>
@@ -108,8 +122,9 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 Fokus utama minggu ini
               </h2>
               <p className="mt-2 max-w-md text-sm leading-6 text-slate-300">
-                Komponen ini dirancang sebagai landing section yang cepat dipindai oleh jemaat
-                maupun PMJ, dengan informasi inti yang relevan untuk koordinasi pelayanan.
+                Komponen ini dirancang sebagai landing section yang cepat
+                dipindai oleh jemaat maupun PMJ, dengan informasi inti yang
+                relevan untuk koordinasi pelayanan.
               </p>
             </div>
 
@@ -118,11 +133,13 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 <div className="text-xs font-medium uppercase tracking-wide text-slate-300">
                   Bacaan Alkitab Mingguan
                 </div>
-                <div className="mt-1 text-sm font-semibold text-white">{weeklyReading.title}</div>
+                <div className="mt-1 text-sm font-semibold text-white">
+                  {weeklyReading.title}
+                </div>
                 <div className="mt-1 text-xs leading-5 text-slate-300">
                   {weeklyReading.passages.length > 0
-                    ? weeklyReading.passages.join(' · ')
-                    : 'Belum tersedia bacaan minggu ini.'}
+                    ? weeklyReading.passages.join(" · ")
+                    : "Belum tersedia bacaan minggu ini."}
                 </div>
               </div>
 
@@ -132,14 +149,16 @@ export function DashboardHeroOverview({ role = "Jemaat" }: DashboardHeroOverview
                 </div>
                 <div className="mt-1 text-sm font-semibold text-white">
                   {fullTimers.length > 0 || pmj.length > 0
-                    ? 'Koordinasi pelayanan aktif'
-                    : 'Menunggu data pelayanan'}
+                    ? "Koordinasi pelayanan aktif"
+                    : "Menunggu data pelayanan"}
                 </div>
                 <div className="mt-1 text-xs leading-5 text-slate-300">
                   {fullTimers.length > 0
                     ? joinNames(fullTimers)
-                    : 'Belum ada petugas full timer.'}
-                  {pmj.length > 0 ? ` | PMJ: ${joinNames(pmj)}` : ' | PMJ belum tersedia.'}
+                    : "Belum ada petugas full timer."}
+                  {pmj.length > 0
+                    ? ` | PMJ: ${joinNames(pmj)}`
+                    : " | PMJ belum tersedia."}
                 </div>
               </div>
             </div>

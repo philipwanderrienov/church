@@ -59,7 +59,9 @@ export function isNavItemVisibleForRole(
 }
 
 export function getVisibleNavItems(role: AppRole): AppShellNavItem[] {
-  return APP_SHELL_NAV_ITEMS.filter((item) => isNavItemVisibleForRole(item, role));
+  return APP_SHELL_NAV_ITEMS.filter((item) =>
+    isNavItemVisibleForRole(item, role),
+  );
 }
 
 export function getRoleLabel(role: AppRole): string {

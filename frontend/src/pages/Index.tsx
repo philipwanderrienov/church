@@ -1,15 +1,5 @@
-import DashboardAnnouncements from "@/components/dashboard/DashboardAnnouncements";
-import DashboardChurchFinance from "@/components/dashboard/DashboardChurchFinance";
-import DashboardCongregationOverview from "@/components/dashboard/DashboardCongregationOverview";
-import DashboardHeroOverview from "@/components/dashboard/DashboardHeroOverview";
-import DashboardLeaderHistory from "@/components/dashboard/DashboardLeaderHistory";
-import DashboardMinistrySchedules from "@/components/dashboard/DashboardMinistrySchedules";
-import DashboardSectorOverview from "@/components/dashboard/DashboardSectorOverview";
-import DashboardStats from "@/components/dashboard/DashboardStats";
-import DashboardUpcomingEvents from "@/components/dashboard/DashboardUpcomingEvents";
-import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions";
-import DashboardFinancialOverview from "@/components/dashboard/DashboardFinancialOverview";
 import PageLayout from "@/components/PageLayout";
+import { DashboardHeroOverview, DashboardStats, DashboardQuickActions, DashboardFinancialOverview, DashboardUpcomingEvents, DashboardCongregationOverview, DashboardSectorOverview, DashboardChurchFinance, DashboardLeaderHistory, DashboardMinistrySchedules, DashboardAnnouncements } from "@/components/dashboard";
 
 export default function Index() {
   return (

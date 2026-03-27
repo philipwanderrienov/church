@@ -12,9 +12,7 @@ export default function DashboardAnnouncements() {
           <CardTitle className="text-lg text-slate-900">
             Recent Announcements
           </CardTitle>
-          <p className="mt-1 text-sm text-slate-500">
-            Latest updates and news
-          </p>
+          <p className="mt-1 text-sm text-slate-500">Latest updates and news</p>
         </div>
         <Button
           variant="ghost"

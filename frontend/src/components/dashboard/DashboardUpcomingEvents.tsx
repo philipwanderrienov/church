@@ -11,9 +11,7 @@ export default function DashboardUpcomingEvents() {
           <CardTitle className="text-lg text-slate-900">
             Upcoming Events
           </CardTitle>
-          <p className="mt-1 text-sm text-slate-500">
-            Next 5 scheduled events
-          </p>
+          <p className="mt-1 text-sm text-slate-500">Next 5 scheduled events</p>
         </div>
         <Button
           variant="ghost"
@@ -81,7 +79,9 @@ export default function DashboardUpcomingEvents() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h3 className="font-semibold text-slate-900">{event.title}</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    {event.title}
+                  </h3>
                   <p className="mt-1 text-sm text-slate-500">
                     {event.time} · {event.location}
                   </p>

@@ -1,2 +1,11 @@
-export { DashboardHeroOverview } from './DashboardHeroOverview';
-export { default as DashboardHeroOverviewDefault } from './DashboardHeroOverview';
+export { default as DashboardHeroOverview } from "./DashboardHeroOverview";
+export { default as DashboardStats } from "./DashboardStats";
+export { default as DashboardQuickActions } from "./DashboardQuickActions";
+export { default as DashboardFinancialOverview } from "./DashboardFinancialOverview";
+export { default as DashboardUpcomingEvents } from "./DashboardUpcomingEvents";
+export { default as DashboardCongregationOverview } from "./DashboardCongregationOverview";
+export { default as DashboardSectorOverview } from "./DashboardSectorOverview";
+export { default as DashboardChurchFinance } from "./DashboardChurchFinance";
+export { default as DashboardLeaderHistory } from "./DashboardLeaderHistory";
+export { default as DashboardMinistrySchedules } from "./DashboardMinistrySchedules";
+export { default as DashboardAnnouncements } from "./DashboardAnnouncements";

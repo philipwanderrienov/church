@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, Pencil, Trash2, Search, Users } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import CrudDialog from "@/components/CrudDialog";
@@ -12,16 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAll, create, update, remove, type Congregant } from "@/lib/store";
 import { toast } from "sonner";
+import type { Congregant } from "@/lib/store";
 import {
   useCongregants,
   useCreateCongregant,
   useUpdateCongregant,
   useDeleteCongregant,
 } from "@/hooks/use-congregant";
-
-const STORE_KEY = "congregants";
 
 const emptyForm: Omit<Congregant, "id"> = {
   fullName: "",
@@ -38,7 +36,6 @@ const emptyForm: Omit<Congregant, "id"> = {
 };
 
 export default function Congregations() {
-  // const [data, setData] = useState<Congregant[]>([]);
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Congregant | null>(null);
@@ -50,10 +47,6 @@ export default function Congregations() {
   const updateMutation = useUpdateCongregant();
   const deleteMutation = useDeleteCongregant();
 
-  // const load = () => setData(getAll<Congregant>(STORE_KEY));
-  // useEffect(load, []);
-
-  // Filter data dari backend
   const filtered = data.filter(
     (c) =>
       String(c.fullName || "")

@@ -32,7 +32,10 @@ export default function Navbar({
                 const isLast = index === breadcrumbs.length - 1;
 
                 return (
-                  <div key={`${item.label}-${index}`} className="flex items-center gap-1">
+                  <div
+                    key={`${item.label}-${index}`}
+                    className="flex items-center gap-1"
+                  >
                     {item.href && !isLast ? (
                       <Link
                         to={item.href}
@@ -63,7 +66,9 @@ export default function Navbar({
         </div>
 
         {rightSlot ? (
-          <div className="flex items-center gap-3 lg:justify-end">{rightSlot}</div>
+          <div className="flex items-center gap-3 lg:justify-end">
+            {rightSlot}
+          </div>
         ) : null}
       </div>
     </header>

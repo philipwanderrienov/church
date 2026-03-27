@@ -3,7 +3,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Login from "./pages/Login";
 import Index from "./pages/Index";
+import PageLayout from "./components/PageLayout";
 import Congregations from "./pages/Congregations";
 import Organization from "./pages/Organization";
 import Statistics from "./pages/Statistics";
@@ -20,12 +22,32 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
-          <Route path="/congregations" element={<Congregations />} />
-          <Route path="/organization" element={<Organization />} />
-          <Route path="/statistics" element={<Statistics />} />
-          <Route path="/finance" element={<Finance />} />
-          <Route path="/prayer-requests" element={<PrayerRequests />} />
+          <Route
+            path="/dashboard"
+            element={<Index />}
+          />
+          <Route
+            path="/congregations"
+            element={<Congregations />}
+          />
+          <Route
+            path="/organization"
+            element={<Organization />}
+          />
+          <Route
+            path="/statistics"
+            element={<Statistics />}
+          />
+          <Route
+            path="/finance"
+            element={<Finance />}
+          />
+          <Route
+            path="/prayer-requests"
+            element={<PrayerRequests />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

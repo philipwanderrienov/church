@@ -48,7 +48,9 @@ export default function DashboardLeaderHistory() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h3 className="font-semibold text-slate-900">{profile.name}</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    {profile.name}
+                  </h3>
                   <p className="mt-1 text-sm text-slate-500">{profile.role}</p>
                 </div>
                 <Badge className="bg-slate-100 text-slate-700 hover:bg-slate-100">

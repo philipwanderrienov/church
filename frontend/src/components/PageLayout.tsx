@@ -117,7 +117,9 @@ export default function PageLayout({
                 <p className="text-sm font-semibold text-foreground">
                   GKPS Tangerang
                 </p>
-                <p className="text-xs text-muted-foreground">Church management</p>
+                <p className="text-xs text-muted-foreground">
+                  Church management
+                </p>
               </div>
             </div>
 
@@ -141,7 +143,11 @@ export default function PageLayout({
             </nav>
           </div>
 
-          <Navbar title={title} breadcrumbs={breadcrumbs} rightSlot={rightSlot} />
+          <Navbar
+            title={title}
+            breadcrumbs={breadcrumbs}
+            rightSlot={rightSlot}
+          />
 
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
             <div className="mx-auto w-full max-w-7xl">{children}</div>
