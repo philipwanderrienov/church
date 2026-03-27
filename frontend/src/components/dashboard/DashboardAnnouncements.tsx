@@ -2,7 +2,7 @@ import { ArrowRight, Bell } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { dashboardAnnouncements } from "@/components/dashboard/dashboardData";
+import dashboardData from "@/components/dashboard/dashboardData";
 
 export default function DashboardAnnouncements() {
   return (
@@ -25,7 +25,17 @@ export default function DashboardAnnouncements() {
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
-        {dashboardAnnouncements.map((announcement) => (
+        {[
+          {
+            title: "Bacaan Alkitab Mingguan",
+            description:
+              "Ringkasan bacaan dan informasi penting untuk jemaat ditampilkan di sini.",
+            meta: "Dashboard Jemaat",
+            badge: "Info",
+            badgeClass: "bg-sky-100 text-sky-700 hover:bg-sky-100",
+            dotClass: "bg-sky-100 text-sky-500",
+          },
+        ].map((announcement) => (
           <div
             key={announcement.title}
             className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-start sm:justify-between"

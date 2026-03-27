@@ -2,7 +2,6 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { dashboardUpcomingEvents } from "@/components/dashboard/dashboardData";
 
 export default function DashboardUpcomingEvents() {
   return (
@@ -25,7 +24,48 @@ export default function DashboardUpcomingEvents() {
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
-        {dashboardUpcomingEvents.map((event) => (
+        {[
+          {
+            month: "Mar",
+            day: "31",
+            title: "Sunday Service",
+            time: "9:00 AM",
+            location: "Main Sanctuary",
+            description: "Weekly Sunday worship service",
+            badge: "Service",
+            badgeClass: "bg-emerald-100 text-emerald-700 hover:bg-emerald-100",
+          },
+          {
+            month: "Mar",
+            day: "31",
+            title: "Easter Celebration",
+            time: "8:00 AM",
+            location: "Main Sanctuary",
+            description: "Annual Easter Sunday celebration",
+            badge: "Event",
+            badgeClass: "bg-amber-100 text-amber-700 hover:bg-amber-100",
+          },
+          {
+            month: "Apr",
+            day: "3",
+            title: "Youth Bible Study",
+            time: "6:30 PM",
+            location: "Youth Center",
+            description: "Weekly youth group meeting",
+            badge: "Meeting",
+            badgeClass: "bg-violet-100 text-violet-700 hover:bg-violet-100",
+          },
+          {
+            month: "Apr",
+            day: "6",
+            title: "Leadership Meeting",
+            time: "10:00 AM",
+            location: "Conference Room",
+            description: "Monthly leadership team meeting",
+            badge: "Meeting",
+            badgeClass: "bg-sky-100 text-sky-700 hover:bg-sky-100",
+          },
+        ].map((event) => (
           <div
             key={`${event.title}-${event.day}`}
             className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-4"

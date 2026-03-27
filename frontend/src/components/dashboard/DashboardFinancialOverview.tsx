@@ -8,14 +8,30 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  dashboardChartConfig,
-  dashboardFinanceData,
-} from "@/components/dashboard/dashboardData";
 
 export default function DashboardFinancialOverview() {
+  const financeData = [
+    { month: "Jan", income: 124000, expenses: 86000 },
+    { month: "Feb", income: 158000, expenses: 92000 },
+    { month: "Mar", income: 143000, expenses: 88000 },
+    { month: "Apr", income: 171000, expenses: 96000 },
+    { month: "May", income: 165000, expenses: 101000 },
+    { month: "Jun", income: 189000, expenses: 110000 },
+  ];
+
+  const chartConfig = {
+    income: {
+      label: "Income",
+      color: "#10b981",
+    },
+    expenses: {
+      label: "Expenses",
+      color: "#f59e0b",
+    },
+  } as const;
+
   const totalIncome = useMemo(
-    () => dashboardFinanceData.reduce((sum, item) => sum + item.income, 0),
+    () => financeData.reduce((sum, item) => sum + item.income, 0),
     [],
   );
 
@@ -53,11 +69,8 @@ export default function DashboardFinancialOverview() {
           </span>
         </div>
 
-        <ChartContainer
-          config={dashboardChartConfig}
-          className="h-[280px] w-full"
-        >
-          <BarChart data={dashboardFinanceData} barGap={10}>
+        <ChartContainer config={chartConfig} className="h-[280px] w-full">
+          <BarChart data={financeData} barGap={10}>
             <CartesianGrid vertical={false} stroke="#e2e8f0" />
             <XAxis
               dataKey="month"
