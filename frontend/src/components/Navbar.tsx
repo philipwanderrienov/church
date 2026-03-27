@@ -1,94 +1,71 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Church } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const navItems = [
-  { label: "Home", path: "/" },
-  { label: "Jemaat", path: "/congregations" },
-  { label: "Organization", path: "/organization" },
-  { label: "Statistics", path: "/statistics" },
-  { label: "Finance", path: "/finance" },
-  { label: "Prayer Requests", path: "/prayer-requests" },
-];
-
-interface NavbarProps {
-  transparent?: boolean;
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
 }
 
-export default function Navbar({ transparent = false }: NavbarProps) {
-  const [open, setOpen] = useState(false);
-  const location = useLocation();
+interface NavbarProps {
+  title?: string;
+  breadcrumbs?: BreadcrumbItem[];
+  rightSlot?: React.ReactNode;
+}
 
-  const isActive = (path: string) => location.pathname === path;
+export default function Navbar({
+  title = "Dashboard",
+  breadcrumbs,
+  rightSlot,
+}: NavbarProps) {
+  const hasBreadcrumbs = Boolean(breadcrumbs?.length);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        transparent ? "bg-transparent" : "bg-primary/95 backdrop-blur-sm"
-      }`}
-    >
-      <div className="container mx-auto flex items-center justify-between py-4 px-4">
-        <Link to="/" className="flex items-center gap-2">
-          <Church className="h-7 w-7 text-gold" />
-          <span className="font-display text-xl font-bold text-cream">
-            GKPS Tangerang
-          </span>
-        </Link>
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="flex flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0 space-y-1">
+          {hasBreadcrumbs ? (
+            <nav
+              aria-label="Breadcrumb"
+              className="flex flex-wrap items-center gap-1 text-sm text-muted-foreground"
+            >
+              {breadcrumbs?.map((item, index) => {
+                const isLast = index === breadcrumbs.length - 1;
 
-        {/* Desktop */}
-        <ul className="hidden lg:flex items-center gap-1">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <Link
-                to={item.path}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.path)
-                    ? "text-gold"
-                    : "text-cream/80 hover:text-cream"
-                }`}
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                return (
+                  <div key={`${item.label}-${index}`} className="flex items-center gap-1">
+                    {item.href && !isLast ? (
+                      <Link
+                        to={item.href}
+                        className="transition-colors hover:text-foreground"
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span className={isLast ? "text-foreground" : undefined}>
+                        {item.label}
+                      </span>
+                    )}
 
-        {/* Mobile toggle */}
-        <button onClick={() => setOpen(!open)} className="lg:hidden text-cream">
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+                    {!isLast && <ChevronRight className="h-4 w-4" />}
+                  </div>
+                );
+              })}
+            </nav>
+          ) : null}
+
+          {title ? (
+            <div className="flex items-center gap-3">
+              <h1 className="truncate text-2xl font-semibold tracking-tight text-foreground">
+                {title}
+              </h1>
+            </div>
+          ) : null}
+        </div>
+
+        {rightSlot ? (
+          <div className="flex items-center gap-3 lg:justify-end">{rightSlot}</div>
+        ) : null}
       </div>
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="lg:hidden bg-primary/95 backdrop-blur-sm overflow-hidden"
-          >
-            <ul className="px-4 pb-4 space-y-1">
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    onClick={() => setOpen(false)}
-                    className={`block px-4 py-3 rounded-md text-sm font-medium transition-colors ${
-                      isActive(item.path)
-                        ? "text-gold bg-navy-light"
-                        : "text-cream/80 hover:text-cream hover:bg-navy-light"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+    </header>
   );
 }
