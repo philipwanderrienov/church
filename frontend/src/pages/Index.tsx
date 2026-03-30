@@ -1,5 +1,17 @@
 import PageLayout from "@/components/PageLayout";
-import { DashboardHeroOverview, DashboardStats, DashboardQuickActions, DashboardFinancialOverview, DashboardUpcomingEvents, DashboardCongregationOverview, DashboardSectorOverview, DashboardChurchFinance, DashboardLeaderHistory, DashboardMinistrySchedules, DashboardAnnouncements } from "@/components/dashboard";
+import {
+  DashboardHeroOverview,
+  DashboardStats,
+  DashboardQuickActions,
+  DashboardFinancialOverview,
+  DashboardUpcomingEvents,
+  DashboardCongregationOverview,
+  DashboardSectorOverview,
+  DashboardChurchFinance,
+  DashboardLeaderHistory,
+  DashboardMinistrySchedules,
+  DashboardAnnouncements,
+} from "@/components/dashboard";
 
 export default function Index() {
   return (

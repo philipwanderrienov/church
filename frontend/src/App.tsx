@@ -24,30 +24,12 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Index />} />
-          <Route
-            path="/dashboard"
-            element={<Index />}
-          />
-          <Route
-            path="/congregations"
-            element={<Congregations />}
-          />
-          <Route
-            path="/organization"
-            element={<Organization />}
-          />
-          <Route
-            path="/statistics"
-            element={<Statistics />}
-          />
-          <Route
-            path="/finance"
-            element={<Finance />}
-          />
-          <Route
-            path="/prayer-requests"
-            element={<PrayerRequests />}
-          />
+          <Route path="/dashboard" element={<Index />} />
+          <Route path="/congregations" element={<Congregations />} />
+          <Route path="/organization" element={<Organization />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/finance" element={<Finance />} />
+          <Route path="/prayer-requests" element={<PrayerRequests />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
