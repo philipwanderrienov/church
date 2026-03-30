@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { Congregant } from "@/lib/store";
 import {
   useCongregants,
@@ -43,6 +44,8 @@ export default function Congregations() {
 
   // ← LOAD DATA DARI BACKEND
   const { data = [], isLoading, error } = useCongregants();
+  const errorMessage =
+    error instanceof Error ? error.message : "Gagal memuat data jemaat";
   const createMutation = useCreateCongregant();
   const updateMutation = useUpdateCongregant();
   const deleteMutation = useDeleteCongregant();
@@ -73,8 +76,11 @@ export default function Congregations() {
   if (error) {
     return (
       <PageLayout>
-        <div className="text-center py-12 text-red-500">
-          Failed to load data
+        <div className="container mx-auto px-4 py-8">
+          <Alert variant="destructive">
+            <AlertTitle>Gagal memuat data jemaat</AlertTitle>
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
         </div>
       </PageLayout>
     );
