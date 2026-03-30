@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/lib/auth";
+import { setPersistedAppRole } from "@/hooks/use-app-role";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ export default function Login() {
     setErrorMessage("");
 
     try {
-      const result = login(identifier.trim(), password);
+      const result = await login(identifier.trim(), password);
 
       if (!result.success) {
         setErrorMessage(
@@ -51,7 +53,9 @@ export default function Login() {
         return;
       }
 
-      navigate("/", { replace: true });
+      setPersistedAppRole(result.user?.role ?? "pmj");
+      toast.success("Login berhasil");
+      navigate("/dashboard", { replace: true });
     } catch {
       setErrorMessage("Terjadi kesalahan saat login. Silakan coba lagi.");
     } finally {
@@ -82,7 +86,7 @@ export default function Login() {
             </h1>
 
             <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
-              Masuk untuk mengakses dashboard jemaat, pemantauan keuangan,
+              Masuk untuk mengakses dashboard pelayanan, pemantauan data,
               statistik pelayanan, dan informasi organisasi gereja dalam satu
               tempat.
             </p>
@@ -209,8 +213,8 @@ export default function Login() {
                       <div className="flex items-start gap-2">
                         <User className="mt-0.5 h-4 w-4 shrink-0 text-white lg:text-primary" />
                         <p>
-                          Gunakan akun prototipe yang sudah disiapkan untuk
-                          mencoba login.
+                          Gunakan email atau username yang terdaftar beserta
+                          password yang benar untuk masuk.
                         </p>
                       </div>
                     </div>

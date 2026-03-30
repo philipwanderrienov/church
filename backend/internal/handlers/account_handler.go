@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"church-app/internal/common/response"
 	"church-app/internal/models"
 	"church-app/internal/repository"
 
@@ -29,16 +30,12 @@ func NewAccountHandler(repo *repository.AccountRepository) *AccountHandler {
 func (h *AccountHandler) GetAllAccounts(c *gin.Context) {
 	accounts, err := h.repo.GetAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve accounts",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve accounts", err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.AccountsListResponse{
-		Message: "Accounts retrieved successfully",
-		Data:    accounts,
-		Total:   len(accounts),
+	response.Success(c, http.StatusOK, "Accounts retrieved successfully", gin.H{
+		"data":  accounts,
+		"total": len(accounts),
 	})
 }
 
@@ -57,60 +54,43 @@ func (h *AccountHandler) GetAccountByID(c *gin.Context) {
 	id := c.Param("id")
 	account, err := h.repo.GetByID(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve account",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve account", err.Error())
 		return
 	}
 	if account == nil {
-		c.JSON(http.StatusNotFound, models.ErrorResponse{
-			Error: "Account not found",
-			Code:  404,
-		})
+		response.NotFound(c, "Account not found", nil)
 		return
 	}
 
-	c.JSON(http.StatusOK, models.AccountResponse{
-		Message: "Account retrieved successfully",
-		Data:    account,
+	response.Success(c, http.StatusOK, "Account retrieved successfully", gin.H{
+		"data": account,
 	})
 }
 
-// CreateAccount handles POST /accounts
-// Creates a new account
-// @Summary Create a new account
-// @Description Add a new account to the system
-// @Tags accounts
-// @Accept json
-// @Produce json
-// @Param account body models.CreateAccountRequest true "Account data"
-// @Success 201 {object} models.AccountResponse
-// @Failure 400 {object} models.AccountErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /accounts [post]
+type createAccountRequest struct {
+	Role string `json:"role" binding:"required,oneof=admin jemaat" example:"jemaat"`
+}
+
 func (h *AccountHandler) CreateAccount(c *gin.Context) {
 	var req models.CreateAccountRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.AccountErrorResponse{
-			Error: "Invalid request payload",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request payload", err.Error())
+		return
+	}
+
+	if req.Role != "admin" && req.Role != "jemaat" {
+		response.BadRequest(c, "Invalid role value", nil)
 		return
 	}
 
 	account, err := h.repo.Create(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to create account",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to create account", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.AccountResponse{
-		Message: "Account created successfully",
-		Data:    account,
+	response.Success(c, http.StatusCreated, "Account created successfully", gin.H{
+		"data": account,
 	})
 }
 
@@ -131,25 +111,23 @@ func (h *AccountHandler) UpdateAccount(c *gin.Context) {
 	id := c.Param("id")
 	var req models.UpdateAccountRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.AccountErrorResponse{
-			Error: "Invalid request payload",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request payload", err.Error())
+		return
+	}
+
+	if req.Role != "" && req.Role != "admin" && req.Role != "jemaat" {
+		response.BadRequest(c, "Invalid role value", nil)
 		return
 	}
 
 	account, err := h.repo.Update(id, req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to update account",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to update account", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.AccountResponse{
-		Message: "Account updated successfully",
-		Data:    account,
+	response.Success(c, http.StatusOK, "Account updated successfully", gin.H{
+		"data": account,
 	})
 }
 
@@ -168,14 +146,9 @@ func (h *AccountHandler) DeleteAccount(c *gin.Context) {
 	id := c.Param("id")
 	err := h.repo.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to delete account",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to delete account", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.AccountResponse{
-		Message: "Account deleted successfully",
-	})
+	response.Success(c, http.StatusOK, "Account deleted successfully", nil)
 }

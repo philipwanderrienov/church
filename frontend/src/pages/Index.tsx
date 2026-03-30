@@ -16,14 +16,11 @@ import {
 export default function Index() {
   return (
     <PageLayout
-      title="Dashboard Jemaat"
-      breadcrumbs={[
-        { label: "Home", href: "/" },
-        { label: "Dashboard Jemaat" },
-      ]}
+      title="Dashboard"
+      breadcrumbs={[{ label: "Home", href: "/" }, { label: "Dashboard" }]}
     >
       <div className="space-y-6">
-        <DashboardHeroOverview role="Jemaat" />
+        <DashboardHeroOverview role="pmj" />
         <DashboardStats />
         <DashboardQuickActions />
         <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">

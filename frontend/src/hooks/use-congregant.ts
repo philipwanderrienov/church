@@ -47,7 +47,8 @@ export const useCongregants = () => {
     queryKey: ["congregations"],
     queryFn: async () => {
       try {
-        const response = (await congregantApi.getAll()) as CongregantApiResponse;
+        const response =
+          (await congregantApi.getAll()) as CongregantApiResponse;
         const congregants = Array.isArray(response?.data?.data)
           ? response.data.data
           : [];

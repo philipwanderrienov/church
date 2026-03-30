@@ -30,6 +30,31 @@ export const APP_SHELL_NAV_ITEMS: AppShellNavItem[] = [
     roles: ["pmj"],
   },
   {
+    title: "Data Keluarga",
+    href: "/families",
+    roles: ["pmj"],
+  },
+  {
+    title: "Warta Jemaat",
+    href: "/bulletin",
+    roles: ["pmj"],
+  },
+  {
+    title: "Keuangan Jemaat",
+    href: "/finance",
+    roles: ["pmj"],
+  },
+  {
+    title: "Bacaan Alkitab",
+    href: "/bible-reading",
+    roles: ["pmj", "jemaat"],
+  },
+  {
+    title: "Petugas Ibadah",
+    href: "/service-schedule",
+    roles: ["pmj", "jemaat"],
+  },
+  {
     title: "Organisasi",
     href: "/organization",
     roles: ["pmj"],

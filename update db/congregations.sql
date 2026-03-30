@@ -20,3 +20,35 @@ CREATE TABLE public.congregations (
 	photo varchar NULL,
 	CONSTRAINT congregations_pkey PRIMARY KEY (id)
 );
+
+-- accounts role support and id correlation with congregations
+ALTER TABLE public.accounts
+	DROP COLUMN IF EXISTS congregation_id;
+
+ALTER TABLE public.accounts
+	ADD COLUMN IF NOT EXISTS role varchar(32) NOT NULL DEFAULT 'jemaat';
+
+UPDATE public.accounts
+SET role = 'jemaat'
+WHERE role IS NULL OR role = '';
+
+UPDATE public.accounts a
+SET role = 'jemaat'
+FROM public.congregations c
+WHERE a.id = c.id
+  AND (a.role IS NULL OR a.role = '' OR a.role NOT IN ('admin', 'jemaat'));
+
+ALTER TABLE public.accounts
+	ALTER COLUMN role SET NOT NULL;
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_constraint
+		WHERE conname = 'accounts_role_check'
+	) THEN
+		ALTER TABLE public.accounts
+		ADD CONSTRAINT accounts_role_check CHECK (role IN ('admin', 'jemaat'));
+	END IF;
+END $$;

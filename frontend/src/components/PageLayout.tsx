@@ -9,6 +9,8 @@ import {
 
 import { NavLink } from "./NavLink";
 import Navbar from "./Navbar";
+import { getVisibleNavItems } from "@/lib/app-shell";
+import { useAppRole } from "@/hooks/use-app-role";
 
 interface BreadcrumbItem {
   label: string;
@@ -61,6 +63,15 @@ export default function PageLayout({
   breadcrumbs,
   rightSlot,
 }: PageLayoutProps) {
+  const { role } = useAppRole();
+  const visibleNavItems = getVisibleNavItems(role);
+  const navigation = visibleNavItems
+    .map((item) => {
+      const match = navigationItems.find((navItem) => navItem.to === item.href);
+      return match ? { ...match, to: item.href } : null;
+    })
+    .filter(Boolean) as typeof navigationItems;
+
   return (
     <div className="min-h-screen bg-muted/30">
       <div className="flex min-h-screen">
@@ -87,7 +98,7 @@ export default function PageLayout({
             </p>
 
             <nav className="mt-4 space-y-1">
-              {navigationItems.map((item) => {
+              {navigation.map((item) => {
                 const Icon = item.icon;
 
                 return (
@@ -124,7 +135,7 @@ export default function PageLayout({
             </div>
 
             <nav className="flex gap-2 overflow-x-auto px-4 pb-4 sm:px-6">
-              {navigationItems.map((item) => {
+              {navigation.map((item) => {
                 const Icon = item.icon;
 
                 return (

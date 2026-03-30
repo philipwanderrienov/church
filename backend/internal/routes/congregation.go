@@ -10,6 +10,7 @@ func RegisterCongregationRoutes(rg *gin.RouterGroup, handler *handlers.Congregat
 	congregationGroup := rg.Group("/congregations")
 	{
 		congregationGroup.GET("", handler.GetAllCongregations)
+		congregationGroup.POST("/auth/login", handler.Login)
 		// CRUD
 		congregationGroup.GET("/:id", handler.GetCongregationByID)
 		congregationGroup.POST("", handler.CreateCongregation)

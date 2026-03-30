@@ -79,6 +79,7 @@ export function useAppRole() {
       })),
       isPMJ: role === "pmj",
       isJemaat: role === "jemaat",
+      isAdmin: role === "pmj",
     }),
     [role],
   );

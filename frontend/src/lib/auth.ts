@@ -1,30 +1,26 @@
 // Lightweight authentication helpers for the church frontend
 
+export type AuthRole = "pmj" | "jemaat";
+
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   username: string;
-  password: string;
-  role: "Jemaat" | "Admin";
+  role: AuthRole;
   avatar?: string;
 }
 
-const AUTH_USER_KEY = "church_auth_user";
+export interface LoginResponse {
+  success: boolean;
+  user?: AuthUser;
+  message: string;
+}
+
 const CURRENT_USER_KEY = "church_current_user";
-
-const DUMMY_USER: AuthUser = {
-  id: "auth-user-001",
-  name: "John Sihotang",
-  email: "john.sihotang@church.local",
-  username: "johnsihotang",
-  password: "church123",
-  role: "Admin",
-  avatar: "/src/assets/church-hero.jpg",
-};
-
-export const DASHBOARD_ROUTE = "/dashboard";
-export const LOGIN_ROUTE = "/";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
+const LOGIN_PATH = `${API_BASE_URL}/api/v1/congregations/auth/login`;
 
 function isBrowser() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
@@ -41,8 +37,7 @@ function safeParseAuthUser(raw: string | null): AuthUser | null {
       typeof parsed.name === "string" &&
       typeof parsed.email === "string" &&
       typeof parsed.username === "string" &&
-      typeof parsed.password === "string" &&
-      (parsed.role === "Jemaat" || parsed.role === "Admin")
+      (parsed.role === "pmj" || parsed.role === "jemaat")
     ) {
       return parsed;
     }
@@ -55,30 +50,13 @@ function safeParseAuthUser(raw: string | null): AuthUser | null {
 
 export function getAuthUser(): AuthUser | null {
   if (!isBrowser()) return null;
-
-  const currentUser = safeParseAuthUser(localStorage.getItem(CURRENT_USER_KEY));
-  if (currentUser) return currentUser;
-
-  const storedUser = safeParseAuthUser(localStorage.getItem(AUTH_USER_KEY));
-  return storedUser;
+  return safeParseAuthUser(localStorage.getItem(CURRENT_USER_KEY));
 }
 
-export function seedAuthUser(): AuthUser {
-  if (!isBrowser()) return DUMMY_USER;
-
-  const existing = safeParseAuthUser(localStorage.getItem(AUTH_USER_KEY));
-  if (existing) {
-    return existing;
-  }
-
-  localStorage.setItem(AUTH_USER_KEY, JSON.stringify(DUMMY_USER));
-  return DUMMY_USER;
-}
-
-export function login(
+export async function login(
   identifier: string,
   password: string,
-): { success: boolean; user?: AuthUser; message: string } {
+): Promise<LoginResponse> {
   if (!isBrowser()) {
     return {
       success: false,
@@ -86,33 +64,69 @@ export function login(
     };
   }
 
-  const seededUser = seedAuthUser();
-  const normalizedIdentifier = identifier.trim().toLowerCase();
-  const matchesIdentity =
-    seededUser.email.toLowerCase() === normalizedIdentifier ||
-    seededUser.username.toLowerCase() === normalizedIdentifier;
+  try {
+    const response = await fetch(LOGIN_PATH, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ identifier, password }),
+    });
 
-  if (!matchesIdentity) {
+    const contentType = response.headers.get("content-type") || "";
+    const rawText = await response.text();
+
+    let data: LoginResponse & { user?: AuthUser; message?: string } = {
+      success: false,
+      message: "Empty response from server.",
+    };
+
+    if (rawText) {
+      if (contentType.includes("application/json")) {
+        try {
+          data = JSON.parse(rawText) as LoginResponse & {
+            user?: AuthUser;
+            message?: string;
+          };
+        } catch {
+          return {
+            success: false,
+            message: "Server returned invalid JSON.",
+          };
+        }
+      } else {
+        return {
+          success: false,
+          message: rawText,
+        };
+      }
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Login gagal. Periksa kembali data Anda.",
+      };
+    }
+
+    if (data.user) {
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+    }
+
+    return {
+      success: Boolean(data.success),
+      user: data.user,
+      message: data.message || "Login successful.",
+    };
+  } catch (error) {
     return {
       success: false,
-      message: "Invalid email/username or password.",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Terjadi kesalahan saat login. Silakan coba lagi.",
     };
   }
-
-  if (seededUser.password !== password) {
-    return {
-      success: false,
-      message: "Invalid email/username or password.",
-    };
-  }
-
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(seededUser));
-
-  return {
-    success: true,
-    user: seededUser,
-    message: "Login successful.",
-  };
 }
 
 export function logout() {

@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"church-app/internal/common/response"
 	"church-app/internal/models"
 	"church-app/internal/repository"
 
@@ -17,6 +18,49 @@ func NewCongregationHandler(repo *repository.CongregationRepository) *Congregati
 	return &CongregationHandler{repo: repo}
 }
 
+// Login handles POST /congregations/auth/login
+func (h *CongregationHandler) Login(c *gin.Context) {
+	var req struct {
+		Identifier string `json:"identifier" binding:"required"`
+		Password   string `json:"password" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.BadRequest(c, "Invalid request data", err.Error())
+		return
+	}
+
+	user, err := h.repo.FindByLoginIdentifier(req.Identifier)
+	if err != nil {
+		response.InternalServerError(c, "Failed to process login", err.Error())
+		return
+	}
+	if user == nil {
+		response.Unauthorized(c, "User not found", nil)
+		return
+	}
+
+	if user.Username != req.Identifier && user.Email.String != req.Identifier {
+		response.Unauthorized(c, "Invalid email/username", nil)
+		return
+	}
+
+	if !h.repo.VerifyPassword(user.PasswordHash, req.Password) {
+		response.Unauthorized(c, "Invalid password", nil)
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Login successful", gin.H{
+		"user": gin.H{
+			"id":       user.ID,
+			"name":     user.FullName,
+			"email":    user.Email.String,
+			"username": user.Username,
+			"role":     "pmj",
+		},
+	})
+}
+
 // GetAllCongregations handles GET /congregations
 // Returns a list of all congregations in the system
 // @Summary Get all congregations
@@ -29,17 +73,12 @@ func NewCongregationHandler(repo *repository.CongregationRepository) *Congregati
 func (h *CongregationHandler) GetAllCongregations(c *gin.Context) {
 	congregations, err := h.repo.GetAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			// Error: "Failed to retrieve congregations",
-			Error: err.Error(), // Include the actual error message for better debugging
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve congregations", err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.CongregationsListResponse{
-		Message: "Congregations retrieved successfully",
-		Data:    congregations,
-		Total:   len(congregations),
+	response.Success(c, http.StatusOK, "Congregations retrieved successfully", gin.H{
+		"data":  congregations,
+		"total": len(congregations),
 	})
 }
 
@@ -58,22 +97,15 @@ func (h *CongregationHandler) GetCongregationByID(c *gin.Context) {
 	id := c.Param("id")
 	congregation, err := h.repo.GetByID(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve congregation",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve congregation", err.Error())
 		return
 	}
 	if congregation == nil {
-		c.JSON(http.StatusNotFound, models.CongregationErrorResponse{
-			Error: "Congregation not found",
-			Code:  404,
-		})
+		response.NotFound(c, "Congregation not found", nil)
 		return
 	}
-	c.JSON(http.StatusOK, models.CongregationResponse{
-		Message: "Congregation retrieved successfully",
-		Data:    congregation,
+	response.Success(c, http.StatusOK, "Congregation retrieved successfully", gin.H{
+		"data": congregation,
 	})
 }
 
@@ -91,25 +123,18 @@ func (h *CongregationHandler) GetCongregationByID(c *gin.Context) {
 func (h *CongregationHandler) CreateCongregation(c *gin.Context) {
 	var req models.CreateCongregationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.CongregationErrorResponse{
-			Error: "Invalid request data",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request data", err.Error())
 		return
 	}
 
 	congregation, err := h.repo.Create(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to create congregation",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to create congregation", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.CongregationResponse{
-		Message: "Congregation created successfully",
-		Data:    congregation,
+	response.Success(c, http.StatusCreated, "Congregation created successfully", gin.H{
+		"data": congregation,
 	})
 }
 
@@ -130,25 +155,18 @@ func (h *CongregationHandler) UpdateCongregation(c *gin.Context) {
 	id := c.Param("id")
 	var req models.UpdateCongregationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.CongregationErrorResponse{
-			Error: "Invalid request data",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request data", err.Error())
 		return
 	}
 
 	congregation, err := h.repo.Update(id, req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to update congregation",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to update congregation", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.CongregationResponse{
-		Message: "Congregation updated successfully",
-		Data:    congregation,
+	response.Success(c, http.StatusOK, "Congregation updated successfully", gin.H{
+		"data": congregation,
 	})
 }
 
@@ -167,10 +185,7 @@ func (h *CongregationHandler) DeleteCongregation(c *gin.Context) {
 	id := c.Param("id")
 	err := h.repo.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to delete congregation",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to delete congregation", err.Error())
 		return
 	}
 	c.Status(http.StatusNoContent)

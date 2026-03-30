@@ -20,6 +20,8 @@ type Congregation struct {
 	Rayon            sql.NullString `json:"rayon" null:"true" example:"North"`                         // Rayon of the congregant
 	JoinDate         sql.NullString `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
 	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
+	Username         string         `json:"username" example:"johnsihotang"`                          // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                        // Hashed password for authentication
 }
 
 type CongregationsListResponse struct {
@@ -72,4 +74,6 @@ type UpdateCongregationRequest struct {
 	Rayon            sql.NullString `json:"rayon" null:"true" example:"North"`                         // Rayon of the congregant
 	JoinDate         sql.NullString `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
 	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
+	Username         string         `json:"username" example:"johnsihotang"`                          // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                        // Hashed password for authentication
 }

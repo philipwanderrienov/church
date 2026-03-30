@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"church-app/internal/common/response"
 	"church-app/internal/models"
 	"church-app/internal/repository"
 
@@ -35,16 +36,12 @@ func NewItemHandler(repo *repository.ItemRepository) *ItemHandler {
 func (h *ItemHandler) GetAllItems(c *gin.Context) {
 	items, err := h.repo.GetAll()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve items",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve items", err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, models.ItemsListResponse{
-		Message: "Items retrieved successfully",
-		Data:    items,
-		Total:   len(items),
+	response.Success(c, http.StatusOK, "Items retrieved successfully", gin.H{
+		"data":  items,
+		"total": len(items),
 	})
 }
 
@@ -62,33 +59,23 @@ func (h *ItemHandler) GetItemByID(c *gin.Context) {
 	// Parse item ID from URL path parameter
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Invalid item ID",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid item ID", err.Error())
 		return
 	}
 
 	// Retrieve item from repository
 	item, err := h.repo.GetByID(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve item",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve item", err.Error())
 		return
 	}
 	if item == nil {
-		c.JSON(http.StatusNotFound, models.ErrorResponse{
-			Error: "Item not found",
-			Code:  404,
-		})
+		response.NotFound(c, "Item not found", nil)
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ItemResponse{
-		Message: "Item retrieved successfully",
-		Data:    item,
+	response.Success(c, http.StatusOK, "Item retrieved successfully", gin.H{
+		"data": item,
 	})
 }
 
@@ -106,10 +93,7 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 	// Bind incoming JSON request to ItemRequest struct
 	var req models.ItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Invalid request body: " + err.Error(),
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request body", err.Error())
 		return
 	}
 
@@ -125,16 +109,12 @@ func (h *ItemHandler) CreateItem(c *gin.Context) {
 	// Create item in repository
 	created, err := h.repo.Create(item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to create item",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to create item", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.ItemResponse{
-		Message: "Item created successfully",
-		Data:    created,
+	response.Success(c, http.StatusCreated, "Item created successfully", gin.H{
+		"data": created,
 	})
 }
 
@@ -153,20 +133,14 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	// Parse item ID from URL path parameter
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Invalid item ID",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid item ID", err.Error())
 		return
 	}
 
 	// Bind incoming JSON request to ItemRequest struct
 	var req models.ItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Invalid request body: " + err.Error(),
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid request body", err.Error())
 		return
 	}
 
@@ -182,16 +156,12 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	// Update item in repository
 	updated, err := h.repo.Update(id, item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to update item",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to update item", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ItemResponse{
-		Message: "Item updated successfully",
-		Data:    updated,
+	response.Success(c, http.StatusOK, "Item updated successfully", gin.H{
+		"data": updated,
 	})
 }
 
@@ -209,27 +179,18 @@ func (h *ItemHandler) DeleteItem(c *gin.Context) {
 	// Parse item ID from URL path parameter
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Invalid item ID",
-			Code:  400,
-		})
+		response.BadRequest(c, "Invalid item ID", err.Error())
 		return
 	}
 
 	// Delete item from repository
 	err = h.repo.Delete(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to delete item",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to delete item", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ItemResponse{
-		Message: "Item deleted successfully",
-		Data:    nil,
-	})
+	response.Success(c, http.StatusOK, "Item deleted successfully", nil)
 }
 
 // SearchItems handles GET /items/search
@@ -246,27 +207,20 @@ func (h *ItemHandler) SearchItems(c *gin.Context) {
 	// Get query parameter from URL
 	query := c.Query("q")
 	if query == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Search query is required",
-			Code:  400,
-		})
+		response.BadRequest(c, "Search query is required", nil)
 		return
 	}
 
 	// Search items in repository
 	items, err := h.repo.Search(query)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to search items",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to search items", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ItemsListResponse{
-		Message: "Search completed successfully",
-		Data:    items,
-		Total:   len(items),
+	response.Success(c, http.StatusOK, "Search completed successfully", gin.H{
+		"data":  items,
+		"total": len(items),
 	})
 }
 
@@ -284,26 +238,19 @@ func (h *ItemHandler) GetItemsByCategory(c *gin.Context) {
 	// Get category from URL path parameter
 	category := c.Param("category")
 	if category == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Error: "Category is required",
-			Code:  400,
-		})
+		response.BadRequest(c, "Category is required", nil)
 		return
 	}
 
 	// Get items by category from repository
 	items, err := h.repo.GetByCategory(category)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
-			Error: "Failed to retrieve items",
-			Code:  500,
-		})
+		response.InternalServerError(c, "Failed to retrieve items", err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ItemsListResponse{
-		Message: "Items retrieved successfully",
-		Data:    items,
-		Total:   len(items),
+	response.Success(c, http.StatusOK, "Items retrieved successfully", gin.H{
+		"data":  items,
+		"total": len(items),
 	})
 }
