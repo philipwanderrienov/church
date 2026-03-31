@@ -9,19 +9,19 @@ type Congregation struct {
 
 	ID               string         `json:"id" example:"1"`                                            // Unique identifier for the congregation
 	FullName         string         `json:"fullname" example:"John Doe"`                               // Full name of the congregant
-	Gender           sql.NullString `json:"gender" null:"true" example:"Male"`                         // Gender of the congregant
-	DateOfBirth      sql.NullString `json:"dateofbirth" null:"true" example:"1990-01-01"`              // Date of birth of the congregant
-	Phone            sql.NullString `json:"phone" null:"true" example:"+1234567890"`                   // Phone number of the congregant
-	Email            sql.NullString `json:"email" null:"true" example:"john.doe@example.com"`          // Email address of the congregant
-	Address          sql.NullString `json:"address" null:"true" example:"123 Main St"`                 // Address of the congregant
-	MaritalStatus    sql.NullString `json:"maritalstatus" null:"true" example:"Single"`                // Marital status of the congregant
-	FamilyCardNumber sql.NullString `json:"familycardnumber" null:"true" example:"FC-12345"`           // Family card number of the congregant
-	ClassSector      sql.NullString `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
-	Rayon            sql.NullString `json:"rayon" null:"true" example:"North"`                         // Rayon of the congregant
-	JoinDate         sql.NullString `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
+	Gender           string         `json:"gender" null:"true" example:"Male"`                         // Gender of the congregant
+	DateOfBirth      string         `json:"dateofbirth" null:"true" example:"1990-01-01"`              // Date of birth of the congregant
+	Phone            string         `json:"phone" null:"true" example:"+1234567890"`                   // Phone number of the congregant
+	Email            string         `json:"email" null:"true" example:"john.doe@example.com"`          // Email address of the congregant
+	Role             string         `json:"role" null:"true" example:"pmj"`                            // Role of the congregant (e.g., PMJ, Jemaat)
+	Address          string         `json:"address" null:"true" example:"123 Main St"`                 // Address of the congregant
+	MaritalStatus    string         `json:"maritalstatus" null:"true" example:"Single"`                // Marital status of the congregant
+	FamilyCardNumber string         `json:"familycardnumber" null:"true" example:"FC-12345"`           // Family card number of the congregant
+	Sector           string         `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
+	JoinDate         string         `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
 	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
-	Username         string         `json:"username" example:"johnsihotang"`                          // Login username
-	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                        // Hashed password for authentication
+	Username         string         `json:"username" example:"johnsihotang"`                           // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                         // Hashed password for authentication
 }
 
 type CongregationsListResponse struct {
@@ -41,21 +41,20 @@ type CongregationErrorResponse struct {
 }
 
 type CreateCongregationRequest struct {
-	// Name     string `json:"name" binding:"required" example:"First Congregation"` // Name of the congregation
-	// Location string `json:"location" binding:"required" example:"City A"`         // Location of the congregation
-
-	FullName         string         `json:"fullname" binding:"required" example:"John Doe"`                      // Full name of the congregant
-	Gender           sql.NullString `json:"gender" null:"true" binding:"required" example:"Male"`                // Gender of the congregant
-	DateOfBirth      sql.NullString `json:"dateofbirth" null:"true" binding:"required" example:"1990-01-01"`     // Date of birth of the congregant
-	Phone            sql.NullString `json:"phone" null:"true" binding:"required" example:"+1234567890"`          // Phone number of the congregant
-	Email            sql.NullString `json:"email" null:"true" binding:"required" example:"john.doe@example.com"` // Email address of the congregant
-	Address          sql.NullString `json:"address" null:"true" binding:"required" example:"123 Main St"`        // Address of the congregant
-	MaritalStatus    sql.NullString `json:"maritalstatus" null:"true" binding:"required" example:"Single"`       // Marital status of the congregant
-	FamilyCardNumber sql.NullString `json:"familycardnumber" null:"true" binding:"required" example:"FC-12345"`  // Family card number of the congregant
-	ClassSector      sql.NullString `json:"classsector" null:"true" binding:"required" example:"Youth"`          // Class sector of the congregant
-	Rayon            sql.NullString `json:"rayon" null:"true" binding:"required" example:"North"`                // Rayon of the congregant
-	JoinDate         sql.NullString `json:"joindate" null:"true" binding:"required" example:"2020-01-01"`        // Join date of the congregant
-	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"`           // URL to the photo of the congregant
+	FullName         string         `json:"fullname" example:"John Doe"`                               // Full name of the congregant
+	Gender           string         `json:"gender" null:"true" example:"Male"`                         // Gender of the congregant
+	DateOfBirth      string         `json:"dateofbirth" null:"true" example:"1990-01-01"`              // Date of birth of the congregant
+	Phone            string         `json:"phone" null:"true" example:"+1234567890"`                   // Phone number of the congregant
+	Email            string         `json:"email" null:"true" example:"john.doe@example.com"`          // Email address of the congregant
+	Role             string         `json:"role" null:"true" example:"pmj"`                            // Role of the congregant (e.g., PMJ, Jemaat)
+	Address          string         `json:"address" null:"true" example:"123 Main St"`                 // Address of the congregant
+	MaritalStatus    string         `json:"maritalstatus" null:"true" example:"Single"`                // Marital status of the congregant
+	FamilyCardNumber string         `json:"familycardnumber" null:"true" example:"FC-12345"`           // Family card number of the congregant
+	Sector           string         `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
+	JoinDate         string         `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
+	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
+	Username         string         `json:"username" example:"johnsihotang"`                           // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                         // Hashed password for authentication
 }
 
 type UpdateCongregationRequest struct {
@@ -63,17 +62,17 @@ type UpdateCongregationRequest struct {
 	// Location string `json:"location" example:"City A"`         // Location of the congregation
 
 	FullName         string         `json:"fullname" example:"John Doe"`                               // Full name of the congregant
-	Gender           sql.NullString `json:"gender" null:"true" example:"Male"`                         // Gender of the congregant
-	DateOfBirth      sql.NullString `json:"dateofbirth" null:"true" example:"1990-01-01"`              // Date of birth of the congregant
-	Phone            sql.NullString `json:"phone" null:"true" example:"+1234567890"`                   // Phone number of the congregant
-	Email            sql.NullString `json:"email" null:"true" example:"john.doe@example.com"`          // Email address of the congregant
-	Address          sql.NullString `json:"address" null:"true" example:"123 Main St"`                 // Address of the congregant
-	MaritalStatus    sql.NullString `json:"maritalstatus" null:"true" example:"Single"`                // Marital status of the congregant
-	FamilyCardNumber sql.NullString `json:"familycardnumber" null:"true" example:"FC-12345"`           // Family card number of the congregant
-	ClassSector      sql.NullString `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
-	Rayon            sql.NullString `json:"rayon" null:"true" example:"North"`                         // Rayon of the congregant
-	JoinDate         sql.NullString `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
+	Gender           string         `json:"gender" null:"true" example:"Male"`                         // Gender of the congregant
+	DateOfBirth      string         `json:"dateofbirth" null:"true" example:"1990-01-01"`              // Date of birth of the congregant
+	Phone            string         `json:"phone" null:"true" example:"+1234567890"`                   // Phone number of the congregant
+	Email            string         `json:"email" null:"true" example:"john.doe@example.com"`          // Email address of the congregant
+	Role             string         `json:"role" null:"true" example:"pmj"`                            // Role of the congregant (e.g., PMJ, Jemaat)
+	Address          string         `json:"address" null:"true" example:"123 Main St"`                 // Address of the congregant
+	MaritalStatus    string         `json:"maritalstatus" null:"true" example:"Single"`                // Marital status of the congregant
+	FamilyCardNumber string         `json:"familycardnumber" null:"true" example:"FC-12345"`           // Family card number of the congregant
+	Sector           string         `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
+	JoinDate         string         `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
 	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
-	Username         string         `json:"username" example:"johnsihotang"`                          // Login username
-	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                        // Hashed password for authentication
+	Username         string         `json:"username" example:"johnsihotang"`                           // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                         // Hashed password for authentication
 }

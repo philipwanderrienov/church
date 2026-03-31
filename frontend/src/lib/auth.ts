@@ -1,21 +1,28 @@
+import { type ApiResponse } from "@/lib/api-response";
+
 // Lightweight authentication helpers for the church frontend
 
 export type AuthRole = "pmj" | "jemaat";
 
 export interface AuthUser {
   id: string;
-  name: string;
+  fullName: string;
+  gender?: string;
+  dateofbirth?: string;
+  phone?: string;
   email: string;
-  username: string;
   role: AuthRole;
-  avatar?: string;
+  address?: string;
+  maritalStatus?: string;
+  familyCardNumber?: string;
+  sector?: string;
+  joinDate?: string;
+  photo?: string;
+  username: string;
+  passwordHash?: string;
 }
 
-export interface LoginResponse {
-  success: boolean;
-  user?: AuthUser;
-  message: string;
-}
+export type LoginResponse = ApiResponse<AuthUser>;
 
 const CURRENT_USER_KEY = "church_current_user";
 const API_BASE_URL =
@@ -27,7 +34,18 @@ function isBrowser() {
 }
 
 function normalizeRole(role: unknown): AuthRole | null {
-  if (role === "pmj" || role === "jemaat") return role;
+  if (typeof role !== "string") return null;
+
+  const normalized = role.trim().toLowerCase();
+
+  if (normalized === "pmj" || normalized === "jemaat") {
+    return normalized;
+  }
+
+  if (normalized === "admin") {
+    return "pmj";
+  }
+
   return null;
 }
 
@@ -55,11 +73,34 @@ function safeParseAuthUser(raw: string | null): AuthUser | null {
     ) {
       return {
         id: parsed.id,
-        name: parsed.name,
+        fullName: parsed.name,
+        gender: typeof parsed.gender === "string" ? parsed.gender : undefined,
+        dateofbirth:
+          typeof parsed.dateofbirth === "string"
+            ? parsed.dateofbirth
+            : undefined,
+        phone: typeof parsed.phone === "string" ? parsed.phone : undefined,
         email: parsed.email,
         username: parsed.username,
         role,
-        avatar: typeof parsed.avatar === "string" ? parsed.avatar : undefined,
+        photo: typeof parsed.photo === "string" ? parsed.photo : undefined,
+        address:
+          typeof parsed.address === "string" ? parsed.address : undefined,
+        maritalStatus:
+          typeof parsed.maritalStatus === "string"
+            ? parsed.maritalStatus
+            : undefined,
+        familyCardNumber:
+          typeof parsed.familyCardNumber === "string"
+            ? parsed.familyCardNumber
+            : undefined,
+        sector: typeof parsed.sector === "string" ? parsed.sector : undefined,
+        joinDate:
+          typeof parsed.joinDate === "string" ? parsed.joinDate : undefined,
+        passwordHash:
+          typeof parsed.passwordHash === "string"
+            ? parsed.passwordHash
+            : undefined,
       };
     }
   } catch {
@@ -75,27 +116,102 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
   const candidate = user as Partial<AuthUser> & {
     role?: unknown;
     name?: unknown;
+    fullName?: unknown;
     email?: unknown;
     username?: unknown;
     id?: unknown;
+    user?: unknown;
   };
 
-  const role = normalizeRole(candidate.role);
+  const nestedUser =
+    candidate.user && typeof candidate.user === "object"
+      ? (candidate.user as Record<string, unknown>)
+      : undefined;
 
-  if (
-    typeof candidate.id === "string" &&
-    typeof candidate.name === "string" &&
-    typeof candidate.email === "string" &&
-    typeof candidate.username === "string" &&
-    role
-  ) {
+  const role =
+    normalizeRole(candidate.role) ??
+    normalizeRole(candidate.user && typeof candidate.user === "object"
+      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).role
+      : undefined) ??
+    normalizeRole(candidate.user && typeof candidate.user === "object"
+      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).role_name
+      : undefined) ??
+    normalizeRole(candidate.user && typeof candidate.user === "object"
+      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).app_role
+      : undefined);
+
+  const id = typeof candidate.id === "string" ? candidate.id : typeof nestedUser?.id === "string" ? nestedUser.id : undefined;
+  const name = typeof candidate.name === "string" ? candidate.name : typeof candidate.fullName === "string" ? candidate.fullName : typeof nestedUser?.name === "string" ? nestedUser.name : typeof nestedUser?.fullName === "string" ? nestedUser.fullName : undefined;
+  const email = typeof candidate.email === "string" ? candidate.email : typeof nestedUser?.email === "string" ? nestedUser.email : undefined;
+  const username = typeof candidate.username === "string" ? candidate.username : typeof nestedUser?.username === "string" ? nestedUser.username : undefined;
+
+  if (typeof id === "string" && typeof name === "string" && typeof email === "string" && typeof username === "string" && role) {
     return {
-      id: candidate.id,
-      name: candidate.name,
-      email: candidate.email,
-      username: candidate.username,
+      id,
+      fullName: name,
+      gender:
+        typeof candidate.gender === "string"
+          ? candidate.gender
+          : typeof nestedUser?.gender === "string"
+            ? nestedUser.gender
+            : undefined,
+      dateofbirth:
+        typeof candidate.dateofbirth === "string"
+          ? candidate.dateofbirth
+          : typeof nestedUser?.dateofbirth === "string"
+            ? nestedUser.dateofbirth
+            : undefined,
+      phone:
+        typeof candidate.phone === "string"
+          ? candidate.phone
+          : typeof nestedUser?.phone === "string"
+            ? nestedUser.phone
+            : undefined,
+      email,
+      username,
       role,
-      avatar: typeof candidate.avatar === "string" ? candidate.avatar : undefined,
+      photo:
+        typeof candidate.photo === "string"
+          ? candidate.photo
+          : typeof nestedUser?.photo === "string"
+            ? nestedUser.photo
+            : undefined,
+      address:
+        typeof candidate.address === "string"
+          ? candidate.address
+          : typeof nestedUser?.address === "string"
+            ? nestedUser.address
+            : undefined,
+      maritalStatus:
+        typeof candidate.maritalStatus === "string"
+          ? candidate.maritalStatus
+          : typeof nestedUser?.maritalStatus === "string"
+            ? nestedUser.maritalStatus
+            : undefined,
+      familyCardNumber:
+        typeof candidate.familyCardNumber === "string"
+          ? candidate.familyCardNumber
+          : typeof nestedUser?.familyCardNumber === "string"
+            ? nestedUser.familyCardNumber
+            : undefined,
+      sector:
+        typeof candidate.sector === "string"
+          ? candidate.sector
+          : typeof nestedUser?.sector === "string"
+            ? nestedUser.sector
+            : undefined,
+      joinDate:
+        typeof candidate.joinDate === "string"
+          ? candidate.joinDate
+          : typeof nestedUser?.joinDate === "string"
+            ? nestedUser.joinDate
+            : undefined,
+      passwordHash:
+        typeof candidate.passwordHash === "string"
+          ? candidate.passwordHash
+          : typeof nestedUser?.passwordHash === "string"
+            ? nestedUser.passwordHash
+            : undefined,
     };
   }
 
@@ -130,18 +246,15 @@ export async function login(
     const contentType = response.headers.get("content-type") || "";
     const rawText = await response.text();
 
-    let data: LoginResponse & { user?: unknown; message?: string } = {
-      success: false,
-      message: "Empty response from server.",
+    let data: ApiResponse<unknown> = {
+      success: response.ok,
+      message: "",
     };
 
     if (rawText) {
       if (contentType.includes("application/json")) {
         try {
-          data = JSON.parse(rawText) as LoginResponse & {
-            user?: unknown;
-            message?: string;
-          };
+          data = JSON.parse(rawText) as ApiResponse<unknown>;
         } catch {
           return {
             success: false,
@@ -154,6 +267,11 @@ export async function login(
           message: rawText,
         };
       }
+    } else if (!response.ok) {
+      return {
+        success: false,
+        message: "Login gagal. Periksa kembali data Anda.",
+      };
     }
 
     if (!response.ok) {
@@ -163,7 +281,7 @@ export async function login(
       };
     }
 
-    const normalizedUser = normalizeAuthUser(data.user);
+    const normalizedUser = normalizeAuthUser(data.data);
 
     if (normalizedUser) {
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(normalizedUser));
@@ -171,6 +289,7 @@ export async function login(
 
     return {
       success: Boolean(data.success),
+      data: normalizedUser ?? undefined,
       user: normalizedUser ?? undefined,
       message: data.message || "Login successful.",
     };

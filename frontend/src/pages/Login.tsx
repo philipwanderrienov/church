@@ -43,32 +43,32 @@ export default function Login() {
     setLoading(true);
     setErrorMessage("");
 
-      try {
-        const result = await login(identifier.trim(), password);
+    try {
+      const result = await login(identifier.trim(), password);
 
-        if (!result.success) {
-          setErrorMessage(
-            result.message || "Login gagal. Periksa kembali data Anda.",
-          );
-          return;
-        }
+      if (!result.success) {
+        setErrorMessage(
+          result.message || "Login gagal. Periksa kembali data Anda.",
+        );
+        return;
+      }
 
-        const role = result.user?.role;
+      const role = result.data?.role;
 
-        if (!role) {
-          setErrorMessage(
-            "Role user tidak ditemukan. Hubungi administrator untuk mendapatkan bantuan.",
-          );
-          return;
-        }
+      if (!role) {
+        setErrorMessage(
+          "Role user tidak ditemukan. Hubungi administrator untuk mendapatkan bantuan.",
+        );
+        return;
+      }
 
-        setPersistedAppRole(role);
-        toast.success("Login berhasil");
-        navigate("/", { replace: true });
-      } catch (error) {
-        console.error("Login failed:", error);
-        setErrorMessage("Terjadi kesalahan saat login. Silakan coba lagi.");
-      } finally {
+      setPersistedAppRole(role);
+      toast.success("Login berhasil");
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErrorMessage("Terjadi kesalahan saat login. Silakan coba lagi.");
+    } finally {
       setLoading(false);
     }
   };

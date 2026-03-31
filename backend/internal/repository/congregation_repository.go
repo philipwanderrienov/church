@@ -25,7 +25,7 @@ func NewCongregationRepository(db *sql.DB) *CongregationRepository {
 func (r *CongregationRepository) GetAll() ([]models.Congregation, error) {
 	// rows, err := r.db.Query("SELECT id, name, location FROM congregations")
 
-	rows, err := r.db.Query("SELECT id, fullName, gender, dateOfBirth, phone, email, address, maritalStatus, familyCardNumber, classSector, rayon, joinDate, photo FROM congregations")
+	rows, err := r.db.Query("SELECT id, fullName, gender, dateOfBirth, phone, email, role, address, maritalStatus, familyCardNumber, sector, joinDate, photo, username, passwordhash FROM congregations")
 
 	if err != nil {
 		// log the SQL error for troubleshooting
@@ -44,7 +44,22 @@ func (r *CongregationRepository) GetAll() ([]models.Congregation, error) {
 
 	for rows.Next() {
 		var congregation models.Congregation
-		if err := rows.Scan(&congregation.ID, &congregation.FullName, &congregation.Gender, &congregation.DateOfBirth, &congregation.Phone, &congregation.Email, &congregation.Address, &congregation.MaritalStatus, &congregation.FamilyCardNumber, &congregation.ClassSector, &congregation.Rayon, &congregation.JoinDate, &congregation.Photo); err != nil {
+		if err := rows.Scan(
+			&congregation.ID,
+			&congregation.FullName,
+			&congregation.Gender,
+			&congregation.DateOfBirth,
+			&congregation.Phone,
+			&congregation.Email,
+			&congregation.Role,
+			&congregation.Address,
+			&congregation.MaritalStatus,
+			&congregation.FamilyCardNumber,
+			&congregation.Sector,
+			&congregation.JoinDate,
+			&congregation.Photo,
+			&congregation.Username,
+			&congregation.PasswordHash); err != nil {
 			return nil, err
 		}
 		congregations = append(congregations, congregation)
@@ -55,8 +70,22 @@ func (r *CongregationRepository) GetAll() ([]models.Congregation, error) {
 // GetByID retrieves a congregation by ID
 func (r *CongregationRepository) GetByID(id string) (*models.Congregation, error) {
 	var congregation models.Congregation
-	err := r.db.QueryRow("SELECT id, fullName, gender, dateOfBirth, phone, email, address, maritalStatus, familyCardNumber, classSector, rayon, joinDate, photo FROM congregations WHERE id = $1", id).Scan(
-		&congregation.ID, &congregation.FullName, &congregation.Gender, &congregation.DateOfBirth, &congregation.Phone, &congregation.Email, &congregation.Address, &congregation.MaritalStatus, &congregation.FamilyCardNumber, &congregation.ClassSector, &congregation.Rayon, &congregation.JoinDate, &congregation.Photo)
+	err := r.db.QueryRow("SELECT id, fullName, gender, dateOfBirth, phone, email, role, address, maritalStatus, familyCardNumber, sector, joinDate, photo, username, passwordhash FROM congregations WHERE id = $1", id).Scan(
+		&congregation.ID,
+		&congregation.FullName,
+		&congregation.Gender,
+		&congregation.DateOfBirth,
+		&congregation.Phone,
+		&congregation.Email,
+		&congregation.Role,
+		&congregation.Address,
+		&congregation.MaritalStatus,
+		&congregation.FamilyCardNumber,
+		&congregation.Sector,
+		&congregation.JoinDate,
+		&congregation.Photo,
+		&congregation.Username,
+		&congregation.PasswordHash)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -76,16 +105,18 @@ func (r *CongregationRepository) Create(req models.CreateCongregationRequest) (*
 		DateOfBirth:      req.DateOfBirth,
 		Phone:            req.Phone,
 		Email:            req.Email,
+		Role:             req.Role,
 		Address:          req.Address,
 		MaritalStatus:    req.MaritalStatus,
 		FamilyCardNumber: req.FamilyCardNumber,
-		ClassSector:      req.ClassSector,
-		Rayon:            req.Rayon,
+		Sector:           req.Sector,
 		JoinDate:         req.JoinDate,
 		Photo:            req.Photo,
+		Username:         req.Username,
+		PasswordHash:     req.PasswordHash,
 	}
-	_, err := r.db.Exec("INSERT INTO congregations (id, fullName, gender, dateOfBirth, phone, email, address, maritalStatus, familyCardNumber, classSector, rayon, joinDate, photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
-		congregation.ID, congregation.FullName, congregation.Gender, congregation.DateOfBirth, congregation.Phone, congregation.Email, congregation.Address, congregation.MaritalStatus, congregation.FamilyCardNumber, congregation.ClassSector, congregation.Rayon, congregation.JoinDate, congregation.Photo)
+	_, err := r.db.Exec("INSERT INTO congregations (id, fullName, gender, dateOfBirth, phone, email, role, address, maritalStatus, familyCardNumber, sector, joinDate, photo, username, passwordhash) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+		congregation.ID, congregation.FullName, congregation.Gender, congregation.DateOfBirth, congregation.Phone, congregation.Email, congregation.Role, congregation.Address, congregation.MaritalStatus, congregation.FamilyCardNumber, congregation.Sector, congregation.JoinDate, congregation.Photo, congregation.Username, congregation.PasswordHash)
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +125,8 @@ func (r *CongregationRepository) Create(req models.CreateCongregationRequest) (*
 
 // Update modifies an existing congregation
 func (r *CongregationRepository) Update(id string, req models.UpdateCongregationRequest) (*models.Congregation, error) {
-	_, err := r.db.Exec("UPDATE congregations SET fullName = $1, gender = $2, dateOfBirth = $3, phone = $4, email = $5, address = $6, maritalStatus = $7, familyCardNumber = $8, classSector = $9, rayon = $10, joinDate = $11, photo = $12 WHERE id = $13",
-		req.FullName, req.Gender, req.DateOfBirth, req.Phone, req.Email, req.Address, req.MaritalStatus, req.FamilyCardNumber, req.ClassSector, req.Rayon, req.JoinDate, req.Photo, id)
+	_, err := r.db.Exec("UPDATE congregations SET fullName = $1, gender = $2, dateOfBirth = $3, phone = $4, email = $5, address = $6, maritalStatus = $7, familyCardNumber = $8, sector = $9, rayon = $10, joinDate = $11, photo = $12 WHERE id = $13",
+		req.FullName, req.Gender, req.DateOfBirth, req.Phone, req.Email, req.Role, req.Address, req.MaritalStatus, req.FamilyCardNumber, req.Sector, req.JoinDate, req.Photo, req.Username, req.PasswordHash, id)
 	if err != nil {
 		return nil, err
 	}
@@ -106,13 +137,15 @@ func (r *CongregationRepository) Update(id string, req models.UpdateCongregation
 		DateOfBirth:      req.DateOfBirth,
 		Phone:            req.Phone,
 		Email:            req.Email,
+		Role:             req.Role,
 		Address:          req.Address,
 		MaritalStatus:    req.MaritalStatus,
 		FamilyCardNumber: req.FamilyCardNumber,
-		ClassSector:      req.ClassSector,
-		Rayon:            req.Rayon,
+		Sector:           req.Sector,
 		JoinDate:         req.JoinDate,
 		Photo:            req.Photo,
+		Username:         req.Username,
+		PasswordHash:     req.PasswordHash,
 	}
 	return &congregation, nil
 }
@@ -120,18 +153,18 @@ func (r *CongregationRepository) Update(id string, req models.UpdateCongregation
 // FindByLoginIdentifier returns a congregation by username or email for login
 func (r *CongregationRepository) FindByLoginIdentifier(identifier string) (*models.Congregation, error) {
 	var congregation models.Congregation
-	err := r.db.QueryRow("SELECT id, fullName, gender, dateOfBirth, phone, email, address, maritalStatus, familyCardNumber, classSector, rayon, joinDate, photo, username, passwordhash FROM congregations WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($1) LIMIT 1", strings.TrimSpace(identifier)).Scan(
+	err := r.db.QueryRow("SELECT id, fullName, gender, dateOfBirth, phone, email, role, address, maritalStatus, familyCardNumber, sector, joinDate, photo, username, passwordhash FROM congregations WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($1) LIMIT 1", strings.TrimSpace(identifier)).Scan(
 		&congregation.ID,
 		&congregation.FullName,
 		&congregation.Gender,
 		&congregation.DateOfBirth,
 		&congregation.Phone,
 		&congregation.Email,
+		&congregation.Role,
 		&congregation.Address,
 		&congregation.MaritalStatus,
 		&congregation.FamilyCardNumber,
-		&congregation.ClassSector,
-		&congregation.Rayon,
+		&congregation.Sector,
 		&congregation.JoinDate,
 		&congregation.Photo,
 		&congregation.Username,

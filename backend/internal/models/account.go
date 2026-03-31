@@ -1,28 +1,28 @@
 package models
 
 type Account struct {
-	ID       string `json:"id" example:"1"`                 // Unique identifier for the account
-	Name     string `json:"name" example:"Alice Smith"`     // Name of the account holder
+	ID       string `json:"id" example:"1"`                    // Unique identifier for the account
+	Fullname string `json:"name" example:"Alice Smith"`        // Name of the account holder
 	Email    string `json:"email" example:"alice@example.com"` // Email address of the account holder
-	Username string `json:"username" example:"alice.smith"` // Login username
-	Role     string `json:"role" example:"admin"`           // Account role: admin or jemaat
+	Role     string `json:"role" example:"admin"`              // Account role: admin or jemaat
+	Username string `json:"username" example:"alice.smith"`    // Login username
 }
 
 type CreateAccountRequest struct {
-	ID       string `json:"id" binding:"required" example:"1"`                      // Account ID, must match congregation ID
-	Name     string `json:"name" binding:"required" example:"Alice Smith"`          // Name of the account holder
-	Email    string `json:"email" binding:"required,email" example:"alice@example.com"` // Email address of the account holder
-	Username string `json:"username" binding:"required" example:"alice.smith"`      // Login username
-	Password string `json:"password" binding:"required" example:"ChangeMe123!"`     // Plaintext password, hashed before storage
-	Role     string `json:"role" binding:"required,oneof=admin jemaat" example:"admin"` // Account role: admin or jemaat
+	ID       string `json:"id" example:"1"`                    // Unique identifier for the account
+	Fullname string `json:"name" example:"Alice Smith"`        // Name of the account holder
+	Email    string `json:"email" example:"alice@example.com"` // Email address of the account holder
+	Role     string `json:"role" example:"admin"`              // Account role: admin or jemaat
+	Username string `json:"username" example:"alice.smith"`    // Login username
+	Password string `json:"password" example:"ChangeMe123!"`   // Optional plaintext password update
 }
 
 type UpdateAccountRequest struct {
-	Name     string `json:"name" example:"Alice Smith"`          // Name of the account holder
-	Email    string `json:"email" example:"alice@example.com"`   // Email address of the account holder
-	Username string `json:"username" example:"alice.smith"`      // Login username
-	Password string `json:"password" example:"ChangeMe123!"`     // Optional plaintext password update
-	Role     string `json:"role" example:"admin"`                // Account role: admin or jemaat
+	Fullname string `json:"name" example:"Alice Smith"`        // Name of the account holder
+	Email    string `json:"email" example:"alice@example.com"` // Email address of the account holder
+	Role     string `json:"role" example:"admin"`              // Account role: admin or jemaat
+	Username string `json:"username" example:"alice.smith"`    // Login username
+	Password string `json:"password" example:"ChangeMe123!"`   // Optional plaintext password update
 }
 
 type AccountResponse struct {

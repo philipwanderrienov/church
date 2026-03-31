@@ -40,7 +40,7 @@ func (h *CongregationHandler) Login(c *gin.Context) {
 		return
 	}
 
-	if user.Username != req.Identifier && user.Email.String != req.Identifier {
+	if user.Username != req.Identifier && user.Email != req.Identifier {
 		response.Unauthorized(c, "Invalid email/username", nil)
 		return
 	}
@@ -54,9 +54,9 @@ func (h *CongregationHandler) Login(c *gin.Context) {
 		"user": gin.H{
 			"id":       user.ID,
 			"name":     user.FullName,
-			"email":    user.Email.String,
+			"email":    user.Email,
 			"username": user.Username,
-			"role":     "pmj",
+			"role":     user.Role,
 		},
 	})
 }

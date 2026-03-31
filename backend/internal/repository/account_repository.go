@@ -31,7 +31,7 @@ func (r *AccountRepository) GetAll() ([]models.Account, error) {
 	var accounts []models.Account
 	for rows.Next() {
 		var account models.Account
-		if err := rows.Scan(&account.ID, &account.Name, &account.Email, &account.Username, &account.Role); err != nil {
+		if err := rows.Scan(&account.ID, &account.Fullname, &account.Email, &account.Username, &account.Role); err != nil {
 			return nil, err
 		}
 		accounts = append(accounts, account)
@@ -42,8 +42,8 @@ func (r *AccountRepository) GetAll() ([]models.Account, error) {
 // GetByID retrieves an account by ID
 func (r *AccountRepository) GetByID(id string) (*models.Account, error) {
 	var account models.Account
-	err := r.db.QueryRow("SELECT id, name, email, username, role FROM accounts WHERE id = $1", id).Scan(
-		&account.ID, &account.Name, &account.Email, &account.Username, &account.Role)
+	err := r.db.QueryRow("SELECT id, fullname, email, username, role FROM accounts WHERE id = $1", id).Scan(
+		&account.ID, &account.Fullname, &account.Email, &account.Username, &account.Role)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -65,13 +65,13 @@ func (r *AccountRepository) Create(req models.CreateAccountRequest) (*models.Acc
 	}
 	account := models.Account{
 		ID:       id,
-		Name:     req.Name,
+		Fullname: req.Fullname,
 		Email:    req.Email,
 		Username: req.Username,
 		Role:     req.Role,
 	}
-	_, err = r.db.Exec("INSERT INTO accounts (id, name, email, username, password_hash, role) VALUES ($1, $2, $3, $4, $5, $6)",
-		account.ID, account.Name, account.Email, account.Username, string(passwordHash), account.Role)
+	_, err = r.db.Exec("INSERT INTO accounts (id, fullname, email, username, password_hash, role) VALUES ($1, $2, $3, $4, $5, $6)",
+		account.ID, account.Fullname, account.Email, account.Username, string(passwordHash), account.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -85,21 +85,21 @@ func (r *AccountRepository) Update(id string, req models.UpdateAccountRequest) (
 		if err != nil {
 			return nil, err
 		}
-		_, err = r.db.Exec("UPDATE accounts SET name = $1, email = $2, username = $3, password_hash = $4, role = $5 WHERE id = $6",
-			req.Name, req.Email, req.Username, string(passwordHash), req.Role, id)
+		_, err = r.db.Exec("UPDATE accounts SET fullname = $1, email = $2, username = $3, password_hash = $4, role = $5 WHERE id = $6",
+			req.Fullname, req.Email, req.Username, string(passwordHash), req.Role, id)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		_, err := r.db.Exec("UPDATE accounts SET name = $1, email = $2, username = $3, role = $4 WHERE id = $5",
-			req.Name, req.Email, req.Username, req.Role, id)
+		_, err := r.db.Exec("UPDATE accounts SET fullname = $1, email = $2, username = $3, role = $4 WHERE id = $5",
+			req.Fullname, req.Email, req.Username, req.Role, id)
 		if err != nil {
 			return nil, err
 		}
 	}
 	account := models.Account{
 		ID:       id,
-		Name:     req.Name,
+		Fullname: req.Fullname,
 		Email:    req.Email,
 		Username: req.Username,
 		Role:     req.Role,
