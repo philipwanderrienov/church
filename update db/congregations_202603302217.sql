@@ -1,3 +1,0 @@
-INSERT INTO public.congregations (id,fullname,gender,dateofbirth,phone,email,address,maritalstatus,familycardnumber,classsector,rayon,joindate,photo,username,passwordhash) VALUES
-	 ('cff8931e-33f8-44b8-894e-f0b719ad2b32','Philip Wanderrienov Sinaga','Male','03/11/1999','081234567890','philip@email.com','Lippo Karawaci, Tangerang','Single','123123123','6','1','01/04/2026',NULL,'philipsinaga','$2a$10$7w4Y9n1qR4M7gJ2m4qfQ5e9m1XK6Jp9X0w1vN9h2nq6g3fQeYQ1bG'),
-	 ('f308e09a-84f8-4f51-8d98-f922a8ebbc80','Veli Haloho','Female','10/02/1998','080987654321','veli@email.com','Taman Cibodas','Single','987987987','3','1','01042026',NULL,'velihaloho','$2a$10$7w4Y9n1qR4M7gJ2m4qfQ5e9m1XK6Jp9X0w1vN9h2nq6g3fQeYQ1bG');

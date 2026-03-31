@@ -26,23 +26,77 @@ function isBrowser() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
 
+function normalizeRole(role: unknown): AuthRole | null {
+  if (role === "pmj" || role === "jemaat") return role;
+  return null;
+}
+
 function safeParseAuthUser(raw: string | null): AuthUser | null {
   if (!raw) return null;
 
   try {
-    const parsed = JSON.parse(raw) as AuthUser;
+    const parsed = JSON.parse(raw) as Partial<AuthUser> & {
+      role?: unknown;
+      name?: unknown;
+      email?: unknown;
+      username?: unknown;
+      id?: unknown;
+    };
+
+    const role = normalizeRole(parsed.role);
+
     if (
       parsed &&
       typeof parsed.id === "string" &&
       typeof parsed.name === "string" &&
       typeof parsed.email === "string" &&
       typeof parsed.username === "string" &&
-      (parsed.role === "pmj" || parsed.role === "jemaat")
+      role
     ) {
-      return parsed;
+      return {
+        id: parsed.id,
+        name: parsed.name,
+        email: parsed.email,
+        username: parsed.username,
+        role,
+        avatar: typeof parsed.avatar === "string" ? parsed.avatar : undefined,
+      };
     }
   } catch {
     return null;
+  }
+
+  return null;
+}
+
+function normalizeAuthUser(user: unknown): AuthUser | null {
+  if (!user || typeof user !== "object") return null;
+
+  const candidate = user as Partial<AuthUser> & {
+    role?: unknown;
+    name?: unknown;
+    email?: unknown;
+    username?: unknown;
+    id?: unknown;
+  };
+
+  const role = normalizeRole(candidate.role);
+
+  if (
+    typeof candidate.id === "string" &&
+    typeof candidate.name === "string" &&
+    typeof candidate.email === "string" &&
+    typeof candidate.username === "string" &&
+    role
+  ) {
+    return {
+      id: candidate.id,
+      name: candidate.name,
+      email: candidate.email,
+      username: candidate.username,
+      role,
+      avatar: typeof candidate.avatar === "string" ? candidate.avatar : undefined,
+    };
   }
 
   return null;
@@ -76,7 +130,7 @@ export async function login(
     const contentType = response.headers.get("content-type") || "";
     const rawText = await response.text();
 
-    let data: LoginResponse & { user?: AuthUser; message?: string } = {
+    let data: LoginResponse & { user?: unknown; message?: string } = {
       success: false,
       message: "Empty response from server.",
     };
@@ -85,7 +139,7 @@ export async function login(
       if (contentType.includes("application/json")) {
         try {
           data = JSON.parse(rawText) as LoginResponse & {
-            user?: AuthUser;
+            user?: unknown;
             message?: string;
           };
         } catch {
@@ -109,13 +163,15 @@ export async function login(
       };
     }
 
-    if (data.user) {
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(data.user));
+    const normalizedUser = normalizeAuthUser(data.user);
+
+    if (normalizedUser) {
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(normalizedUser));
     }
 
     return {
       success: Boolean(data.success),
-      user: data.user,
+      user: normalizedUser ?? undefined,
       message: data.message || "Login successful.",
     };
   } catch (error) {

@@ -27,11 +27,7 @@ const App = () => (
           <Route
             path="/"
             element={
-              getAuthUser() ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              getAuthUser() ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
             }
           />
           <Route
