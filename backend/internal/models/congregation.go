@@ -20,8 +20,14 @@ type Congregation struct {
 	Sector           string         `json:"classsector" null:"true" example:"Youth"`                   // Class sector of the congregant
 	JoinDate         string         `json:"joindate" null:"true" example:"2020-01-01"`                 // Join date of the congregant
 	Photo            sql.NullString `json:"photo" null:"true" example:"https://example.com/photo.jpg"` // URL to the photo of the congregant
+<<<<<<< Updated upstream
 	Username         string         `json:"username" example:"johnsihotang"`                           // Login username
 	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                         // Hashed password for authentication
+=======
+	Username         string         `json:"username" example:"johnsihotang"`                          // Login username
+	PasswordHash     string         `json:"-" example:"$2a$10$hashedpassword"`                        // Hashed password for authentication
+	Role             string         `json:"role" example:"jemaat"`                                    // Account role
+>>>>>>> Stashed changes
 }
 
 type CongregationsListResponse struct {

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/auth";
+import { login, logout } from "@/lib/auth";
 import { setPersistedAppRole } from "@/hooks/use-app-role";
 import { toast } from "sonner";
 
@@ -53,6 +53,7 @@ export default function Login() {
         return;
       }
 
+<<<<<<< Updated upstream
       const role = result.data?.role;
 
       if (!role) {
@@ -63,6 +64,18 @@ export default function Login() {
       }
 
       setPersistedAppRole(role);
+=======
+      if (!result.user?.role) {
+        logout();
+        setErrorMessage(
+          result.message ||
+            "Login berhasil tetapi data pengguna tidak lengkap.",
+        );
+        return;
+      }
+
+      setPersistedAppRole(result.user.role);
+>>>>>>> Stashed changes
       toast.success("Login berhasil");
       navigate("/", { replace: true });
     } catch (error) {

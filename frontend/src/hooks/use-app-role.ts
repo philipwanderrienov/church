@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { APP_ROLE_LABELS, type AppRole, isAppRole } from "../lib/app-shell";
 
 const APP_ROLE_STORAGE_KEY = "church.app-role";
-const DEFAULT_APP_ROLE: AppRole = "pmj";
+const DEFAULT_APP_ROLE: AppRole = "jemaat";
 
 function readStoredAppRole(): AppRole {
   if (typeof window === "undefined") {

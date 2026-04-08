@@ -2,7 +2,7 @@ import { type ApiResponse } from "@/lib/api-response";
 
 // Lightweight authentication helpers for the church frontend
 
-export type AuthRole = "pmj" | "jemaat";
+export type AuthRole = string;
 
 export interface AuthUser {
   id: string;
@@ -34,6 +34,7 @@ function isBrowser() {
 }
 
 function normalizeRole(role: unknown): AuthRole | null {
+<<<<<<< Updated upstream
   if (typeof role !== "string") return null;
 
   const normalized = role.trim().toLowerCase();
@@ -44,6 +45,10 @@ function normalizeRole(role: unknown): AuthRole | null {
 
   if (normalized === "admin") {
     return "pmj";
+=======
+  if (typeof role === "string" && role.trim().length > 0) {
+    return role.trim();
+>>>>>>> Stashed changes
   }
 
   return null;
@@ -113,14 +118,19 @@ function safeParseAuthUser(raw: string | null): AuthUser | null {
 function normalizeAuthUser(user: unknown): AuthUser | null {
   if (!user || typeof user !== "object") return null;
 
-  const candidate = user as Partial<AuthUser> & {
-    role?: unknown;
+  const candidate = user as {
+    id?: unknown;
     name?: unknown;
     fullName?: unknown;
     email?: unknown;
     username?: unknown;
+<<<<<<< Updated upstream
     id?: unknown;
     user?: unknown;
+=======
+    role?: unknown;
+    avatar?: unknown;
+>>>>>>> Stashed changes
   };
 
   const nestedUser =
@@ -128,6 +138,7 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
       ? (candidate.user as Record<string, unknown>)
       : undefined;
 
+<<<<<<< Updated upstream
   const role =
     normalizeRole(candidate.role) ??
     normalizeRole(candidate.user && typeof candidate.user === "object"
@@ -146,6 +157,14 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
   const username = typeof candidate.username === "string" ? candidate.username : typeof nestedUser?.username === "string" ? nestedUser.username : undefined;
 
   if (typeof id === "string" && typeof name === "string" && typeof email === "string" && typeof username === "string" && role) {
+=======
+  if (
+    typeof candidate.id === "string" &&
+    typeof candidate.name === "string" &&
+    typeof candidate.email === "string" &&
+    typeof candidate.username === "string"
+  ) {
+>>>>>>> Stashed changes
     return {
       id,
       fullName: name,
@@ -170,6 +189,7 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
       email,
       username,
       role,
+<<<<<<< Updated upstream
       photo:
         typeof candidate.photo === "string"
           ? candidate.photo
@@ -212,10 +232,18 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
           : typeof nestedUser?.passwordHash === "string"
             ? nestedUser.passwordHash
             : undefined,
+=======
+      avatar:
+        typeof candidate.avatar === "string" ? candidate.avatar : undefined,
+>>>>>>> Stashed changes
     };
   }
 
   return null;
+}
+
+function normalizeLoginUserPayload(user: unknown): AuthUser | null {
+  return normalizeAuthUser(user);
 }
 
 export function getAuthUser(): AuthUser | null {
@@ -281,7 +309,11 @@ export async function login(
       };
     }
 
+<<<<<<< Updated upstream
     const normalizedUser = normalizeAuthUser(data.data);
+=======
+    const normalizedUser = normalizeLoginUserPayload(data.user ?? data);
+>>>>>>> Stashed changes
 
     if (normalizedUser) {
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(normalizedUser));
