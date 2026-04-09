@@ -53,18 +53,6 @@ export default function Login() {
         return;
       }
 
-<<<<<<< Updated upstream
-      const role = result.data?.role;
-
-      if (!role) {
-        setErrorMessage(
-          "Role user tidak ditemukan. Hubungi administrator untuk mendapatkan bantuan.",
-        );
-        return;
-      }
-
-      setPersistedAppRole(role);
-=======
       if (!result.user?.role) {
         logout();
         setErrorMessage(
@@ -74,8 +62,9 @@ export default function Login() {
         return;
       }
 
-      setPersistedAppRole(result.user.role);
->>>>>>> Stashed changes
+      setPersistedAppRole(
+        result.user.role as Parameters<typeof setPersistedAppRole>[0],
+      );
       toast.success("Login berhasil");
       navigate("/", { replace: true });
     } catch (error) {
@@ -104,14 +93,24 @@ export default function Login() {
               GKPS Tangerang
             </div>
 
-            <h1 className="max-w-lg text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+            {/* <h1 className="max-w-lg text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
               Selamat datang kembali di ruang pelayanan digital gereja.
+            </h1> */}
+            <h1 className="max-w-lg text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+              Lorem Ipsum
             </h1>
 
-            <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+            {/* <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
               Masuk untuk mengakses dashboard pelayanan, pemantauan data,
               statistik pelayanan, dan informasi organisasi gereja dalam satu
               tempat.
+            </p> */}
+
+            <p className="mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book.
             </p>
 
             <div className="mt-8 grid max-w-xl gap-3 text-sm text-white/75 sm:grid-cols-3">

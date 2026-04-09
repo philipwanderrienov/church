@@ -18,7 +18,35 @@ func NewCongregationHandler(repo *repository.CongregationRepository) *Congregati
 	return &CongregationHandler{repo: repo}
 }
 
+type LoginRequest struct {
+	Identifier string `json:"identifier" example:"johnsihotang"`
+	Password   string `json:"password" example:"password123"`
+}
+
+type LoginUserResponse struct {
+	ID       string `json:"id" example:"1"`
+	Name     string `json:"name" example:"John Doe"`
+	Email    string `json:"email" example:"john.doe@example.com"`
+	Username string `json:"username" example:"johnsihotang"`
+	Role     string `json:"role" example:"jemaat"`
+}
+
+type LoginResponse struct {
+	Message string             `json:"message" example:"Login successful"`
+	User    LoginUserResponse  `json:"user"`
+}
+
 // Login handles POST /congregations/auth/login
+// @Summary Login user
+// @Description Authenticate user with email or username and password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body LoginRequest true "Login credentials"
+// @Success 200 {object} LoginResponse
+// @Failure 400 {object} models.CongregationErrorResponse
+// @Failure 401 {object} models.CongregationErrorResponse
+// @Router /congregations/auth/login [post]
 func (h *CongregationHandler) Login(c *gin.Context) {
 	var req struct {
 		Identifier string `json:"identifier" binding:"required"`

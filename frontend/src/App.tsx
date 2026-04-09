@@ -1,5 +1,12 @@
+import { useEffect, useMemo, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,9 +19,55 @@ import Statistics from "./pages/Statistics";
 import Finance from "./pages/Finance";
 import PrayerRequests from "./pages/PrayerRequests";
 import NotFound from "./pages/NotFound";
-import { getAuthUser } from "./lib/auth";
+import { getAuthUser, type AuthUser } from "./lib/auth";
 
 const queryClient = new QueryClient();
+
+const AUTH_STORAGE_KEY = "church_current_user";
+
+function readAuthUser(): AuthUser | null {
+  return getAuthUser();
+}
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  return readAuthUser() ? children : <Navigate to="/login" replace />;
+}
+
+function RootRedirect() {
+  const navigate = useNavigate();
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => readAuthUser());
+
+  useEffect(() => {
+    const syncAuth = () => {
+      setAuthUser(readAuthUser());
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === AUTH_STORAGE_KEY) {
+        syncAuth();
+      }
+    };
+
+    syncAuth();
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("focus", syncAuth);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("focus", syncAuth);
+    };
+  }, []);
+
+  const target = useMemo(
+    () => (authUser ? "/dashboard" : "/login"),
+    [authUser],
+  );
+
+  useEffect(() => {
+    navigate(target, { replace: true });
+  }, [navigate, target]);
+
+  return null;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -24,78 +77,69 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              getAuthUser() ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
+          <Route path="/" element={<RootRedirect />} />
           <Route
             path="/accounts/new"
             element={
-              getAuthUser() ? (
+              <ProtectedRoute>
                 <AccountCreate />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              </ProtectedRoute>
             }
           />
           <Route
             path="/dashboard"
             element={
-              getAuthUser() ? <Index /> : <Navigate to="/login" replace />
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/congregations"
             element={
-              getAuthUser() ? (
+              <ProtectedRoute>
                 <Congregations />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              </ProtectedRoute>
             }
           />
           <Route
             path="/organization"
             element={
-              getAuthUser() ? (
+              <ProtectedRoute>
                 <Organization />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              </ProtectedRoute>
             }
           />
           <Route
             path="/statistics"
             element={
-              getAuthUser() ? <Statistics /> : <Navigate to="/login" replace />
+              <ProtectedRoute>
+                <Statistics />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/finance"
             element={
-              getAuthUser() ? <Finance /> : <Navigate to="/login" replace />
+              <ProtectedRoute>
+                <Finance />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/prayer-requests"
             element={
-              getAuthUser() ? (
+              <ProtectedRoute>
                 <PrayerRequests />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              </ProtectedRoute>
             }
           />
           <Route
             path="*"
             element={
-              getAuthUser() ? <NotFound /> : <Navigate to="/login" replace />
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
             }
           />
         </Routes>

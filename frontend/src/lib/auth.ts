@@ -34,82 +34,8 @@ function isBrowser() {
 }
 
 function normalizeRole(role: unknown): AuthRole | null {
-<<<<<<< Updated upstream
-  if (typeof role !== "string") return null;
-
-  const normalized = role.trim().toLowerCase();
-
-  if (normalized === "pmj" || normalized === "jemaat") {
-    return normalized;
-  }
-
-  if (normalized === "admin") {
-    return "pmj";
-=======
   if (typeof role === "string" && role.trim().length > 0) {
     return role.trim();
->>>>>>> Stashed changes
-  }
-
-  return null;
-}
-
-function safeParseAuthUser(raw: string | null): AuthUser | null {
-  if (!raw) return null;
-
-  try {
-    const parsed = JSON.parse(raw) as Partial<AuthUser> & {
-      role?: unknown;
-      name?: unknown;
-      email?: unknown;
-      username?: unknown;
-      id?: unknown;
-    };
-
-    const role = normalizeRole(parsed.role);
-
-    if (
-      parsed &&
-      typeof parsed.id === "string" &&
-      typeof parsed.name === "string" &&
-      typeof parsed.email === "string" &&
-      typeof parsed.username === "string" &&
-      role
-    ) {
-      return {
-        id: parsed.id,
-        fullName: parsed.name,
-        gender: typeof parsed.gender === "string" ? parsed.gender : undefined,
-        dateofbirth:
-          typeof parsed.dateofbirth === "string"
-            ? parsed.dateofbirth
-            : undefined,
-        phone: typeof parsed.phone === "string" ? parsed.phone : undefined,
-        email: parsed.email,
-        username: parsed.username,
-        role,
-        photo: typeof parsed.photo === "string" ? parsed.photo : undefined,
-        address:
-          typeof parsed.address === "string" ? parsed.address : undefined,
-        maritalStatus:
-          typeof parsed.maritalStatus === "string"
-            ? parsed.maritalStatus
-            : undefined,
-        familyCardNumber:
-          typeof parsed.familyCardNumber === "string"
-            ? parsed.familyCardNumber
-            : undefined,
-        sector: typeof parsed.sector === "string" ? parsed.sector : undefined,
-        joinDate:
-          typeof parsed.joinDate === "string" ? parsed.joinDate : undefined,
-        passwordHash:
-          typeof parsed.passwordHash === "string"
-            ? parsed.passwordHash
-            : undefined,
-      };
-    }
-  } catch {
-    return null;
   }
 
   return null;
@@ -124,13 +50,19 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
     fullName?: unknown;
     email?: unknown;
     username?: unknown;
-<<<<<<< Updated upstream
-    id?: unknown;
-    user?: unknown;
-=======
     role?: unknown;
     avatar?: unknown;
->>>>>>> Stashed changes
+    gender?: unknown;
+    dateofbirth?: unknown;
+    phone?: unknown;
+    address?: unknown;
+    maritalStatus?: unknown;
+    familyCardNumber?: unknown;
+    sector?: unknown;
+    joinDate?: unknown;
+    photo?: unknown;
+    passwordHash?: unknown;
+    user?: unknown;
   };
 
   const nestedUser =
@@ -138,33 +70,51 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
       ? (candidate.user as Record<string, unknown>)
       : undefined;
 
-<<<<<<< Updated upstream
   const role =
     normalizeRole(candidate.role) ??
-    normalizeRole(candidate.user && typeof candidate.user === "object"
-      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).role
-      : undefined) ??
-    normalizeRole(candidate.user && typeof candidate.user === "object"
-      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).role_name
-      : undefined) ??
-    normalizeRole(candidate.user && typeof candidate.user === "object"
-      ? (candidate.user as { role?: unknown; role_name?: unknown; app_role?: unknown }).app_role
-      : undefined);
+    normalizeRole(nestedUser?.role) ??
+    normalizeRole(nestedUser?.role_name) ??
+    normalizeRole(nestedUser?.app_role);
 
-  const id = typeof candidate.id === "string" ? candidate.id : typeof nestedUser?.id === "string" ? nestedUser.id : undefined;
-  const name = typeof candidate.name === "string" ? candidate.name : typeof candidate.fullName === "string" ? candidate.fullName : typeof nestedUser?.name === "string" ? nestedUser.name : typeof nestedUser?.fullName === "string" ? nestedUser.fullName : undefined;
-  const email = typeof candidate.email === "string" ? candidate.email : typeof nestedUser?.email === "string" ? nestedUser.email : undefined;
-  const username = typeof candidate.username === "string" ? candidate.username : typeof nestedUser?.username === "string" ? nestedUser.username : undefined;
+  const id =
+    typeof candidate.id === "string"
+      ? candidate.id
+      : typeof nestedUser?.id === "string"
+        ? nestedUser.id
+        : undefined;
 
-  if (typeof id === "string" && typeof name === "string" && typeof email === "string" && typeof username === "string" && role) {
-=======
-  if (
-    typeof candidate.id === "string" &&
-    typeof candidate.name === "string" &&
-    typeof candidate.email === "string" &&
+  const name =
+    typeof candidate.name === "string"
+      ? candidate.name
+      : typeof candidate.fullName === "string"
+        ? candidate.fullName
+        : typeof nestedUser?.name === "string"
+          ? nestedUser.name
+          : typeof nestedUser?.fullName === "string"
+            ? nestedUser.fullName
+            : undefined;
+
+  const email =
+    typeof candidate.email === "string"
+      ? candidate.email
+      : typeof nestedUser?.email === "string"
+        ? nestedUser.email
+        : undefined;
+
+  const username =
     typeof candidate.username === "string"
+      ? candidate.username
+      : typeof nestedUser?.username === "string"
+        ? nestedUser.username
+        : undefined;
+
+  if (
+    typeof id === "string" &&
+    typeof name === "string" &&
+    typeof email === "string" &&
+    typeof username === "string" &&
+    role
   ) {
->>>>>>> Stashed changes
     return {
       id,
       fullName: name,
@@ -189,13 +139,14 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
       email,
       username,
       role,
-<<<<<<< Updated upstream
       photo:
         typeof candidate.photo === "string"
           ? candidate.photo
-          : typeof nestedUser?.photo === "string"
-            ? nestedUser.photo
-            : undefined,
+          : typeof candidate.avatar === "string"
+            ? candidate.avatar
+            : typeof nestedUser?.photo === "string"
+              ? nestedUser.photo
+              : undefined,
       address:
         typeof candidate.address === "string"
           ? candidate.address
@@ -232,14 +183,21 @@ function normalizeAuthUser(user: unknown): AuthUser | null {
           : typeof nestedUser?.passwordHash === "string"
             ? nestedUser.passwordHash
             : undefined,
-=======
-      avatar:
-        typeof candidate.avatar === "string" ? candidate.avatar : undefined,
->>>>>>> Stashed changes
     };
   }
 
   return null;
+}
+
+function safeParseAuthUser(raw: string | null): AuthUser | null {
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    return normalizeAuthUser(parsed);
+  } catch {
+    return null;
+  }
 }
 
 function normalizeLoginUserPayload(user: unknown): AuthUser | null {
@@ -309,11 +267,10 @@ export async function login(
       };
     }
 
-<<<<<<< Updated upstream
-    const normalizedUser = normalizeAuthUser(data.data);
-=======
-    const normalizedUser = normalizeLoginUserPayload(data.user ?? data);
->>>>>>> Stashed changes
+    const normalizedUser = normalizeLoginUserPayload(
+      (data as { user?: unknown; data?: unknown }).user ??
+        (data as { user?: unknown; data?: unknown }).data,
+    );
 
     if (normalizedUser) {
       localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(normalizedUser));

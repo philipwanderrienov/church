@@ -1,5 +1,40 @@
 basePath: /api/v1
 definitions:
+  handlers.LoginRequest:
+    properties:
+      identifier:
+        example: johnsihotang
+        type: string
+      password:
+        example: password123
+        type: string
+    type: object
+  handlers.LoginResponse:
+    properties:
+      message:
+        example: Login successful
+        type: string
+      user:
+        $ref: '#/definitions/handlers.LoginUserResponse'
+    type: object
+  handlers.LoginUserResponse:
+    properties:
+      email:
+        example: john.doe@example.com
+        type: string
+      id:
+        example: "1"
+        type: string
+      name:
+        example: John Doe
+        type: string
+      role:
+        example: jemaat
+        type: string
+      username:
+        example: johnsihotang
+        type: string
+    type: object
   models.Account:
     properties:
       email:
@@ -13,6 +48,14 @@ definitions:
       name:
         description: Name of the account holder
         example: Alice Smith
+        type: string
+      role:
+        description: 'Account role: admin or jemaat'
+        example: admin
+        type: string
+      username:
+        description: Login username
+        example: alice.smith
         type: string
     type: object
   models.AccountErrorResponse:
@@ -103,9 +146,13 @@ definitions:
         description: URL to the photo of the congregant
         example: https://example.com/photo.jpg
         type: string
-      rayon:
-        description: Rayon of the congregant
-        example: North
+      role:
+        description: Role of the congregant
+        example: jemaat
+        type: string
+      username:
+        description: Login username
+        example: johnsihotang
         type: string
     type: object
   models.CongregationErrorResponse:
@@ -145,20 +192,6 @@ definitions:
         description: Total count of congregations
         example: 2
         type: integer
-    type: object
-  models.CreateAccountRequest:
-    properties:
-      email:
-        description: Email address of the account holder
-        example: alice@example.com
-        type: string
-      name:
-        description: Name of the account holder
-        example: Alice Smith
-        type: string
-    required:
-    - email
-    - name
     type: object
   models.CreateCongregationRequest:
     properties:
@@ -206,22 +239,14 @@ definitions:
         description: URL to the photo of the congregant
         example: https://example.com/photo.jpg
         type: string
-      rayon:
-        description: Rayon of the congregant
-        example: North
+      role:
+        description: Role of the congregant (e.g., PMJ, Jemaat)
+        example: pmj
         type: string
-    required:
-    - address
-    - classsector
-    - dateofbirth
-    - email
-    - familycardnumber
-    - fullname
-    - gender
-    - joindate
-    - maritalstatus
-    - phone
-    - rayon
+      username:
+        description: Login username
+        example: johnsihotang
+        type: string
     type: object
   models.ErrorResponse:
     properties:
@@ -318,6 +343,18 @@ definitions:
         description: Name of the account holder
         example: Alice Smith
         type: string
+      password:
+        description: Optional plaintext password update
+        example: ChangeMe123!
+        type: string
+      role:
+        description: 'Account role: admin or jemaat'
+        example: admin
+        type: string
+      username:
+        description: Login username
+        example: alice.smith
+        type: string
     type: object
   models.UpdateCongregationRequest:
     properties:
@@ -365,9 +402,13 @@ definitions:
         description: URL to the photo of the congregant
         example: https://example.com/photo.jpg
         type: string
-      rayon:
-        description: Rayon of the congregant
-        example: North
+      role:
+        description: Role of the congregant (e.g., PMJ, Jemaat)
+        example: pmj
+        type: string
+      username:
+        description: Login username
+        example: johnsihotang
         type: string
     type: object
 host: localhost:8080
@@ -397,35 +438,6 @@ paths:
           schema:
             $ref: '#/definitions/models.AccountsListResponse'
       summary: Get all accounts
-      tags:
-      - accounts
-    post:
-      consumes:
-      - application/json
-      description: Add a new account to the system
-      parameters:
-      - description: Account data
-        in: body
-        name: account
-        required: true
-        schema:
-          $ref: '#/definitions/models.CreateAccountRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.AccountResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.AccountErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Create a new account
       tags:
       - accounts
   /accounts/{id}:
@@ -632,6 +644,36 @@ paths:
       summary: Update a congregation
       tags:
       - congregations
+  /congregations/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email or username and password
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.CongregationErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.CongregationErrorResponse'
+      summary: Login user
+      tags:
+      - auth
   /items:
     get:
       consumes:

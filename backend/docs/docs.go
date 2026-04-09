@@ -45,50 +45,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Add a new account to the system",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "accounts"
-                ],
-                "summary": "Create a new account",
-                "parameters": [
-                    {
-                        "description": "Account data",
-                        "name": "account",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CreateAccountRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.AccountResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.AccountErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
         "/accounts/{id}": {
@@ -270,6 +226,52 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CongregationErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/congregations/auth/login": {
+            "post": {
+                "description": "Authenticate user with email or username and password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.CongregationErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/models.CongregationErrorResponse"
                         }
@@ -621,6 +623,56 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "type": "string",
+                    "example": "johnsihotang"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123"
+                }
+            }
+        },
+        "handlers.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Login successful"
+                },
+                "user": {
+                    "$ref": "#/definitions/handlers.LoginUserResponse"
+                }
+            }
+        },
+        "handlers.LoginUserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@example.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "jemaat"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "johnsihotang"
+                }
+            }
+        },
         "models.Account": {
             "type": "object",
             "properties": {
@@ -638,6 +690,16 @@ const docTemplate = `{
                     "description": "Name of the account holder",
                     "type": "string",
                     "example": "Alice Smith"
+                },
+                "role": {
+                    "description": "Account role: admin or jemaat",
+                    "type": "string",
+                    "example": "admin"
+                },
+                "username": {
+                    "description": "Login username",
+                    "type": "string",
+                    "example": "alice.smith"
                 }
             }
         },
@@ -759,10 +821,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "https://example.com/photo.jpg"
                 },
-                "rayon": {
-                    "description": "Rayon of the congregant",
+                "role": {
+                    "description": "Role of the congregant",
                     "type": "string",
-                    "example": "North"
+                    "example": "jemaat"
+                },
+                "username": {
+                    "description": "Login username",
+                    "type": "string",
+                    "example": "johnsihotang"
                 }
             }
         },
@@ -821,40 +888,8 @@ const docTemplate = `{
                 }
             }
         },
-        "models.CreateAccountRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "name"
-            ],
-            "properties": {
-                "email": {
-                    "description": "Email address of the account holder",
-                    "type": "string",
-                    "example": "alice@example.com"
-                },
-                "name": {
-                    "description": "Name of the account holder",
-                    "type": "string",
-                    "example": "Alice Smith"
-                }
-            }
-        },
         "models.CreateCongregationRequest": {
             "type": "object",
-            "required": [
-                "address",
-                "classsector",
-                "dateofbirth",
-                "email",
-                "familycardnumber",
-                "fullname",
-                "gender",
-                "joindate",
-                "maritalstatus",
-                "phone",
-                "rayon"
-            ],
             "properties": {
                 "address": {
                     "description": "Address of the congregant",
@@ -911,10 +946,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "https://example.com/photo.jpg"
                 },
-                "rayon": {
-                    "description": "Rayon of the congregant",
+                "role": {
+                    "description": "Role of the congregant (e.g., PMJ, Jemaat)",
                     "type": "string",
-                    "example": "North"
+                    "example": "pmj"
+                },
+                "username": {
+                    "description": "Login username",
+                    "type": "string",
+                    "example": "johnsihotang"
                 }
             }
         },
@@ -1048,6 +1088,21 @@ const docTemplate = `{
                     "description": "Name of the account holder",
                     "type": "string",
                     "example": "Alice Smith"
+                },
+                "password": {
+                    "description": "Optional plaintext password update",
+                    "type": "string",
+                    "example": "ChangeMe123!"
+                },
+                "role": {
+                    "description": "Account role: admin or jemaat",
+                    "type": "string",
+                    "example": "admin"
+                },
+                "username": {
+                    "description": "Login username",
+                    "type": "string",
+                    "example": "alice.smith"
                 }
             }
         },
@@ -1109,10 +1164,15 @@ const docTemplate = `{
                     "type": "string",
                     "example": "https://example.com/photo.jpg"
                 },
-                "rayon": {
-                    "description": "Rayon of the congregant",
+                "role": {
+                    "description": "Role of the congregant (e.g., PMJ, Jemaat)",
                     "type": "string",
-                    "example": "North"
+                    "example": "pmj"
+                },
+                "username": {
+                    "description": "Login username",
+                    "type": "string",
+                    "example": "johnsihotang"
                 }
             }
         }
