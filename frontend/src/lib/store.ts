@@ -52,6 +52,16 @@ export interface PrayerRequest {
   status: "Pending" | "Prayed" | "Answered";
 }
 
+export interface WeeklyReadingStoreItem {
+  id: string;
+  service_date: string;
+  title: string;
+  passage: string;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 function getStore<T>(key: string): T[] {
   const data = localStorage.getItem(key);
   return data ? JSON.parse(data) : [];

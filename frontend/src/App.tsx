@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,7 +28,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function RootRedirect() {
-  const navigate = useNavigate();
   const [authUser, setAuthUser] = useState<AuthUser | null>(() => readAuthUser());
 
   useEffect(() => {
@@ -62,11 +55,7 @@ function RootRedirect() {
     [authUser],
   );
 
-  useEffect(() => {
-    navigate(target, { replace: true });
-  }, [navigate, target]);
-
-  return null;
+  return <Navigate to={target} replace />;
 }
 
 const App = () => (

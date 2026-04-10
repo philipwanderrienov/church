@@ -27,7 +27,7 @@ interface PageLayoutProps {
 const navigationItems = [
   {
     label: "Dashboard",
-    to: "/",
+    to: "/dashboard",
     icon: LayoutDashboard,
   },
   {

@@ -12,6 +12,7 @@ import {
   DashboardMinistrySchedules,
   DashboardAnnouncements,
 } from "@/components/dashboard";
+import dashboardData from "@/components/dashboard/dashboardData";
 
 export default function Index() {
   return (
@@ -20,8 +21,8 @@ export default function Index() {
       breadcrumbs={[{ label: "Home", href: "/" }, { label: "Dashboard" }]}
     >
       <div className="space-y-6">
-        <DashboardHeroOverview role="pmj" />
-        <DashboardStats />
+        <DashboardHeroOverview role="pmj" data={dashboardData} />
+        <DashboardStats data={dashboardData} />
         <DashboardQuickActions />
         <div className="grid gap-6 xl:grid-cols-[1.35fr_1fr]">
           <DashboardFinancialOverview />

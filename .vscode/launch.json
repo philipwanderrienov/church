@@ -13,7 +13,7 @@
             },
             "args": [],
             "serverReadyAction": {
-                "pattern": "Server starting on .*:8081",
+                "pattern": ".*",
                 "uriFormat": "http://localhost:8081/swagger/index.html",
                 "action": "openExternally"
             }

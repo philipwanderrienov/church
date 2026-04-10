@@ -28,6 +28,15 @@ export function setPersistedAppRole(role: AppRole) {
   );
 }
 
+export function clearPersistedAppRole() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.removeItem(APP_ROLE_STORAGE_KEY);
+  window.dispatchEvent(new CustomEvent("app-role-change"));
+}
+
 export function useAppRole() {
   const [role, setRoleState] = useState<AppRole>(() => readStoredAppRole());
 

@@ -1,4 +1,5 @@
 import { type ApiResponse } from "@/lib/api-response";
+import { clearPersistedAppRole } from "@/hooks/use-app-role";
 
 // Lightweight authentication helpers for the church frontend
 
@@ -225,8 +226,10 @@ export async function login(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({ identifier, password }),
+      mode: "cors",
     });
 
     const contentType = response.headers.get("content-type") || "";
@@ -236,6 +239,10 @@ export async function login(
       success: response.ok,
       message: "",
     };
+
+    const fallbackErrorMessage = response.ok
+      ? ""
+      : `Login gagal (${response.status}).`;
 
     if (rawText) {
       if (contentType.includes("application/json")) {
@@ -250,20 +257,23 @@ export async function login(
       } else {
         return {
           success: false,
-          message: rawText,
+          message: rawText || fallbackErrorMessage || "Login gagal.",
         };
       }
     } else if (!response.ok) {
       return {
         success: false,
-        message: "Login gagal. Periksa kembali data Anda.",
+        message: fallbackErrorMessage || "Login gagal. Periksa kembali data Anda.",
       };
     }
 
     if (!response.ok) {
       return {
         success: false,
-        message: data.message || "Login gagal. Periksa kembali data Anda.",
+        message:
+          data.message ||
+          fallbackErrorMessage ||
+          "Login gagal. Periksa kembali data Anda.",
       };
     }
 
@@ -296,4 +306,5 @@ export async function login(
 export function logout() {
   if (!isBrowser()) return;
   localStorage.removeItem(CURRENT_USER_KEY);
+  clearPersistedAppRole();
 }

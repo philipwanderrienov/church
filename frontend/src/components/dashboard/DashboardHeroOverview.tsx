@@ -1,19 +1,12 @@
 import { BookOpen, CalendarDays, Church, Users } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import dashboardData from "./dashboardData";
+import dashboardData, { type DashboardData } from "./dashboardData";
 
 type DashboardHeroOverviewProps = {
   role?: string;
+  data?: DashboardData;
 };
-
-const weeklyReading = dashboardData.weeklyReading ?? {
-  title: "Bacaan Alkitab Mingguan",
-  passages: [],
-};
-
-const fullTimers = dashboardData.fullTimers ?? [];
-const pmj = dashboardData.pmj ?? [];
 
 function joinNames(items: { name: string }[], max = 2) {
   if (items.length === 0) return "";
@@ -28,7 +21,16 @@ function joinNames(items: { name: string }[], max = 2) {
 
 export function DashboardHeroOverview({
   role = "Jemaat",
+  data = dashboardData,
 }: DashboardHeroOverviewProps) {
+  const weeklyReading = data.weeklyReading ?? {
+    title: "Bacaan Alkitab Mingguan",
+    passages: [],
+  };
+
+  const fullTimers = data.fullTimers ?? [];
+  const pmj = data.pmj ?? [];
+
   return (
     <section className="grid gap-4 lg:grid-cols-12">
       <Card className="overflow-hidden rounded-2xl border-slate-200 bg-white shadow-sm lg:col-span-7">
@@ -45,9 +47,6 @@ export function DashboardHeroOverview({
                   Gareja na sari, martangkupas, janah siboan pasu-pasu
                 </h1>
                 <p className="max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-                  {/* Ringkasan cepat untuk membantu {role.toLowerCase()} memantau bacaan Alkitab
-                  mingguan, petugas full timer, dan koordinasi PMJ dalam satu tampilan yang
-                  ringkas. */}
                   Gabe gareja na matoras mambobai kuria gabe angkula ni Kristus
                   na mangoluh
                 </p>

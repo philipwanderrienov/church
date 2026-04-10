@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 
 	_ "github.com/lib/pq"
 )
@@ -18,26 +20,33 @@ type DBConfig struct {
 }
 
 func NewDBConfig() *DBConfig {
+	port := 5432
+	if rawPort := os.Getenv("DB_PORT"); rawPort != "" {
+		if parsedPort, err := strconv.Atoi(rawPort); err == nil {
+			port = parsedPort
+		}
+	}
+
 	return &DBConfig{
-		Host:     "localhost", // Change as needed
-		Port:     5432,
-		User:     "postgres",  // Replace with your DB username
-		Password: "qwerty123", // Replace with your DB password
-		DBName:   "church",    // Replace with your DB name
-		SSLMode:  "disable",   // or "require" depending on your setup
+		Host:     getenvOrDefault("DB_HOST", "localhost"),
+		Port:     port,
+		User:     getenvOrDefault("DB_USER", "postgres"),
+		Password: getenvOrDefault("DB_PASSWORD", "qwerty123"),
+		DBName:   getenvOrDefault("DB_NAME", "church"),
+		SSLMode:  getenvOrDefault("DB_SSLMODE", "disable"),
 	}
 }
 
-func (c *DBConfig) Connect() (*sql.DB, error) {
-	var connStr string
-	// Omit the password from the connection string if it's not provided.
-	if c.Password != "" {
-		connStr = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-			c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode)
-	} else {
-		connStr = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s",
-			c.Host, c.Port, c.User, c.DBName, c.SSLMode)
+func getenvOrDefault(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
 	}
+	return fallback
+}
+
+func (c *DBConfig) Connect() (*sql.DB, error) {
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+		c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode)
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {

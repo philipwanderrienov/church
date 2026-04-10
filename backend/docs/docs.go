@@ -1192,9 +1192,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:8081",
 	BasePath:         "/api/v1",
-	Schemes:          []string{},
+	Schemes:          []string{"http"},
 	Title:            "Inventory Management API",
 	Description:      "This is a sample CRUD API for inventory management system",
 	InfoInstanceName: "swagger",

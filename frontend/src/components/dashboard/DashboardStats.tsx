@@ -1,47 +1,74 @@
 import { Activity, DollarSign, HeartHandshake, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import dashboardData, {
+  type DashboardData,
+  type DashboardFinanceSummary,
+} from "./dashboardData";
 
-export default function DashboardStats() {
+type DashboardStatsProps = {
+  data?: DashboardData;
+};
+
+const iconMap = {
+  members: Users,
+  activity: Activity,
+  finance: DollarSign,
+  prayer: HeartHandshake,
+} as const;
+
+function resolveStats(data: DashboardData) {
+  const financeByLabel = data.financeSummary.reduce<Record<string, DashboardFinanceSummary>>(
+    (acc, item) => {
+      acc[item.label] = item;
+      return acc;
+    },
+    {},
+  );
+
+  return [
+    {
+      title: "Total Members",
+      value: "342",
+      change: "+3.5%",
+      description: "12 new this month",
+      icon: iconMap.members,
+      iconBg: "bg-emerald-100 text-emerald-600",
+      trend: "positive" as const,
+    },
+    {
+      title: "Active Members",
+      value: "285",
+      change: "+2.1%",
+      description: "83% of total",
+      icon: iconMap.activity,
+      iconBg: "bg-teal-100 text-teal-600",
+      trend: "positive" as const,
+    },
+    {
+      title: "Total Donations",
+      value: financeByLabel["Total Persembahan"]?.value ?? "$45,500",
+      change: financeByLabel["Total Persembahan"]?.change ?? "+12.5%",
+      description: financeByLabel["Total Persembahan"]?.description ?? "This month",
+      icon: iconMap.finance,
+      iconBg: "bg-green-100 text-green-600",
+      trend: "positive" as const,
+    },
+    {
+      title: "Prayer Requests",
+      value: "18",
+      change: "-5%",
+      description: "Active requests",
+      icon: iconMap.prayer,
+      iconBg: "bg-rose-100 text-rose-600",
+      trend: "negative" as const,
+    },
+  ];
+}
+
+export default function DashboardStats({ data = dashboardData }: DashboardStatsProps) {
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {[
-        {
-          title: "Total Members",
-          value: "342",
-          change: "+3.5%",
-          description: "12 new this month",
-          icon: Users,
-          iconBg: "bg-emerald-100 text-emerald-600",
-          trend: "positive" as const,
-        },
-        {
-          title: "Active Members",
-          value: "285",
-          change: "+2.1%",
-          description: "83% of total",
-          icon: Activity,
-          iconBg: "bg-teal-100 text-teal-600",
-          trend: "positive" as const,
-        },
-        {
-          title: "Total Donations",
-          value: "$45,500",
-          change: "+12.5%",
-          description: "This month",
-          icon: DollarSign,
-          iconBg: "bg-green-100 text-green-600",
-          trend: "positive" as const,
-        },
-        {
-          title: "Prayer Requests",
-          value: "18",
-          change: "-5%",
-          description: "Active requests",
-          icon: HeartHandshake,
-          iconBg: "bg-rose-100 text-rose-600",
-          trend: "negative" as const,
-        },
-      ].map((stat) => {
+      {resolveStats(data).map((stat) => {
         const Icon = stat.icon;
 
         return (
