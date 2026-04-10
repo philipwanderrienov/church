@@ -1,0 +1,16 @@
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\bin\Debug\net8.0\Church.Application.deps.json
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\bin\Debug\net8.0\Church.Application.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\bin\Debug\net8.0\Church.Application.pdb
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\bin\Debug\net8.0\Church.Domain.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\bin\Debug\net8.0\Church.Domain.pdb
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.csproj.AssemblyReference.cache
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.AssemblyInfoInputs.cache
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.AssemblyInfo.cs
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.csproj.CoreCompileInputs.cache
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.sourcelink.json
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.A.743332F8.Up2Date
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\refint\Church.Application.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\Church.Application.pdb
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Application\obj\Debug\net8.0\ref\Church.Application.dll

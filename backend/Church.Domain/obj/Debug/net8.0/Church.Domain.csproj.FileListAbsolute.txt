@@ -1,0 +1,12 @@
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\bin\Debug\net8.0\Church.Domain.deps.json
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\bin\Debug\net8.0\Church.Domain.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\bin\Debug\net8.0\Church.Domain.pdb
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.AssemblyInfoInputs.cache
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.AssemblyInfo.cs
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.csproj.CoreCompileInputs.cache
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.sourcelink.json
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\refint\Church.Domain.dll
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\Church.Domain.pdb
+C:\Users\philip.wanderrienov\Music\church\backend\src\Church.Domain\obj\Debug\net8.0\ref\Church.Domain.dll
