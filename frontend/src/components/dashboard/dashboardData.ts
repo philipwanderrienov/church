@@ -138,7 +138,7 @@ export function mapDashboardApiData(
         change:
           typeof summary.change === "number"
             ? `${summary.change > 0 ? "+" : ""}${summary.change}`
-            : summary.change ?? undefined,
+            : (summary.change ?? undefined),
         description: summary.description ?? undefined,
       })) ?? [],
   };

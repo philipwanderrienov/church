@@ -1,12 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { NavbarComponent } from './navbar.component';
-import { NavLinkComponent } from './nav-link.component';
+import { CommonModule } from "@angular/common";
+import { Component, Input } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { AuthService } from "../services/auth.service";
+import { NavbarComponent } from "./navbar.component";
+import { NavLinkComponent } from "./nav-link.component";
 
 @Component({
-  selector: 'app-page-layout',
+  selector: "app-page-layout",
   standalone: true,
   imports: [CommonModule, RouterLink, NavbarComponent, NavLinkComponent],
   template: `
@@ -68,25 +68,25 @@ import { NavLinkComponent } from './nav-link.component';
       </div>
     </div>
   `,
-  styleUrls: ['./page-layout.component.scss'],
+  styleUrls: ["./page-layout.component.scss"],
 })
 export class PageLayoutComponent {
-  @Input() title = 'Dashboard';
+  @Input() title = "Dashboard";
   @Input() breadcrumbs: { label: string; href?: string }[] = [];
   @Input() rightSlot: unknown;
 
   navigation = [
-    { label: 'Dashboard', to: '/', exact: true },
-    { label: 'Jemaat', to: '/congregations', exact: false },
-    { label: 'Keuangan', to: '/finance', exact: false },
-    { label: 'Statistik', to: '/statistics', exact: false },
-    { label: 'Pokok Doa', to: '/prayer-requests', exact: false },
-    { label: 'Organisasi', to: '/organization', exact: false },
+    { label: "Dashboard", to: "/", exact: true },
+    { label: "Jemaat", to: "/congregations", exact: false },
+    { label: "Keuangan", to: "/finance", exact: false },
+    { label: "Statistik", to: "/statistics", exact: false },
+    { label: "Pokok Doa", to: "/prayer-requests", exact: false },
+    { label: "Organisasi", to: "/organization", exact: false },
   ];
 
   constructor(private readonly authService: AuthService) {
     if (!this.authService.getAuthUser()) {
-      this.navigation = this.navigation.filter((item) => item.to === '/');
+      this.navigation = this.navigation.filter((item) => item.to === "/");
     }
   }
 }

@@ -1,9 +1,9 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app.config';
-import { authTokenInterceptor } from './app/services/auth.interceptor';
+import { bootstrapApplication } from "@angular/platform-browser";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import { AppComponent } from "./app/app.component";
+import { appConfig } from "./app/app.config";
+import { authTokenInterceptor } from "./app/services/auth.interceptor";
 
 bootstrapApplication(AppComponent, {
   ...appConfig,

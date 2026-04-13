@@ -17,13 +17,12 @@ const iconMap = {
 } as const;
 
 function resolveStats(data: DashboardData) {
-  const financeByLabel = data.financeSummary.reduce<Record<string, DashboardFinanceSummary>>(
-    (acc, item) => {
-      acc[item.label] = item;
-      return acc;
-    },
-    {},
-  );
+  const financeByLabel = data.financeSummary.reduce<
+    Record<string, DashboardFinanceSummary>
+  >((acc, item) => {
+    acc[item.label] = item;
+    return acc;
+  }, {});
 
   return [
     {
@@ -48,7 +47,8 @@ function resolveStats(data: DashboardData) {
       title: "Total Donations",
       value: financeByLabel["Total Persembahan"]?.value ?? "$45,500",
       change: financeByLabel["Total Persembahan"]?.change ?? "+12.5%",
-      description: financeByLabel["Total Persembahan"]?.description ?? "This month",
+      description:
+        financeByLabel["Total Persembahan"]?.description ?? "This month",
       icon: iconMap.finance,
       iconBg: "bg-green-100 text-green-600",
       trend: "positive" as const,
@@ -65,7 +65,9 @@ function resolveStats(data: DashboardData) {
   ];
 }
 
-export default function DashboardStats({ data = dashboardData }: DashboardStatsProps) {
+export default function DashboardStats({
+  data = dashboardData,
+}: DashboardStatsProps) {
   return (
     <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {resolveStats(data).map((stat) => {

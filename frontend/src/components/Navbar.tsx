@@ -120,7 +120,7 @@ export default function Navbar({
                   <div className="flex items-center gap-2">
                     <div className="flex flex-col items-end leading-tight">
                       <span className="text-sm font-semibold text-foreground">
-                        {currentUser.name}
+                        {currentUser.fullName}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {roleText || currentUser.role}
@@ -141,7 +141,7 @@ export default function Navbar({
                 <DropdownMenuLabel>
                   <div className="space-y-1">
                     <p className="text-sm font-semibold text-foreground">
-                      {currentUser.name}
+                      {currentUser.fullName}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {currentUser.email}

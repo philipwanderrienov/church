@@ -1,201 +1,170 @@
 import { type ApiResponse } from "@/lib/api-response";
 import { clearPersistedAppRole } from "@/hooks/use-app-role";
 
-// Lightweight authentication helpers for the church frontend
-
 export type AuthRole = string;
 
 export interface AuthUser {
   id: string;
   fullName: string;
   gender?: string;
-  dateofbirth?: string;
-  phone?: string;
+  dateOfBirth?: string;
+  phoneNumber?: string;
   email: string;
   role: AuthRole;
   address?: string;
   maritalStatus?: string;
   familyCardNumber?: string;
-  sector?: string;
+  congregationId?: string | number;
+  congregationName?: string;
   joinDate?: string;
   photo?: string;
   username: string;
   passwordHash?: string;
 }
 
-export type LoginResponse = ApiResponse<AuthUser>;
+export type LoginResponse = ApiResponse<AuthUser> & {
+  user?: AuthUser;
+};
 
 const CURRENT_USER_KEY = "church_current_user";
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8081";
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000";
 const LOGIN_PATH = `${API_BASE_URL}/api/v1/congregations/auth/login`;
 
 function isBrowser() {
   return typeof window !== "undefined" && typeof localStorage !== "undefined";
 }
 
-function normalizeRole(role: unknown): AuthRole | null {
-  if (typeof role === "string" && role.trim().length > 0) {
-    return role.trim();
-  }
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim().length > 0
+    ? value.trim()
+    : undefined;
+}
 
-  return null;
+function normalizeRole(role: unknown): AuthRole | null {
+  const normalized = asString(role);
+  return normalized ?? null;
 }
 
 function normalizeAuthUser(user: unknown): AuthUser | null {
   if (!user || typeof user !== "object") return null;
 
-  const candidate = user as {
-    id?: unknown;
-    name?: unknown;
-    fullName?: unknown;
-    email?: unknown;
-    username?: unknown;
-    role?: unknown;
-    avatar?: unknown;
-    gender?: unknown;
-    dateofbirth?: unknown;
-    phone?: unknown;
-    address?: unknown;
-    maritalStatus?: unknown;
-    familyCardNumber?: unknown;
-    sector?: unknown;
-    joinDate?: unknown;
-    photo?: unknown;
-    passwordHash?: unknown;
-    user?: unknown;
-  };
-
+  const candidate = user as Record<string, unknown>;
   const nestedUser =
     candidate.user && typeof candidate.user === "object"
       ? (candidate.user as Record<string, unknown>)
       : undefined;
 
+  const id =
+    asString(candidate.id) ??
+    asString(candidate.Id) ??
+    asString(nestedUser?.id) ??
+    asString(nestedUser?.Id);
+  const fullName =
+    asString(candidate.fullName) ??
+    asString(candidate.FullName) ??
+    asString(candidate.name) ??
+    asString(candidate.Name) ??
+    asString(nestedUser?.fullName) ??
+    asString(nestedUser?.FullName) ??
+    asString(nestedUser?.name) ??
+    asString(nestedUser?.Name);
+  const email =
+    asString(candidate.email) ??
+    asString(candidate.Email) ??
+    asString(nestedUser?.email) ??
+    asString(nestedUser?.Email);
+  const username =
+    asString(candidate.username) ??
+    asString(candidate.Username) ??
+    asString(nestedUser?.username) ??
+    asString(nestedUser?.Username);
   const role =
     normalizeRole(candidate.role) ??
+    normalizeRole(candidate.Role) ??
     normalizeRole(nestedUser?.role) ??
+    normalizeRole(nestedUser?.Role) ??
     normalizeRole(nestedUser?.role_name) ??
     normalizeRole(nestedUser?.app_role);
 
-  const id =
-    typeof candidate.id === "string"
-      ? candidate.id
-      : typeof nestedUser?.id === "string"
-        ? nestedUser.id
-        : undefined;
+  if (!id || !fullName || !email || !username || !role) return null;
 
-  const name =
-    typeof candidate.name === "string"
-      ? candidate.name
-      : typeof candidate.fullName === "string"
-        ? candidate.fullName
-        : typeof nestedUser?.name === "string"
-          ? nestedUser.name
-          : typeof nestedUser?.fullName === "string"
-            ? nestedUser.fullName
-            : undefined;
-
-  const email =
-    typeof candidate.email === "string"
-      ? candidate.email
-      : typeof nestedUser?.email === "string"
-        ? nestedUser.email
-        : undefined;
-
-  const username =
-    typeof candidate.username === "string"
-      ? candidate.username
-      : typeof nestedUser?.username === "string"
-        ? nestedUser.username
-        : undefined;
-
-  if (
-    typeof id === "string" &&
-    typeof name === "string" &&
-    typeof email === "string" &&
-    typeof username === "string" &&
-    role
-  ) {
-    return {
-      id,
-      fullName: name,
-      gender:
-        typeof candidate.gender === "string"
-          ? candidate.gender
-          : typeof nestedUser?.gender === "string"
-            ? nestedUser.gender
-            : undefined,
-      dateofbirth:
-        typeof candidate.dateofbirth === "string"
-          ? candidate.dateofbirth
-          : typeof nestedUser?.dateofbirth === "string"
-            ? nestedUser.dateofbirth
-            : undefined,
-      phone:
-        typeof candidate.phone === "string"
-          ? candidate.phone
-          : typeof nestedUser?.phone === "string"
-            ? nestedUser.phone
-            : undefined,
-      email,
-      username,
-      role,
-      photo:
-        typeof candidate.photo === "string"
-          ? candidate.photo
-          : typeof candidate.avatar === "string"
-            ? candidate.avatar
-            : typeof nestedUser?.photo === "string"
-              ? nestedUser.photo
-              : undefined,
-      address:
-        typeof candidate.address === "string"
-          ? candidate.address
-          : typeof nestedUser?.address === "string"
-            ? nestedUser.address
-            : undefined,
-      maritalStatus:
-        typeof candidate.maritalStatus === "string"
-          ? candidate.maritalStatus
-          : typeof nestedUser?.maritalStatus === "string"
-            ? nestedUser.maritalStatus
-            : undefined,
-      familyCardNumber:
-        typeof candidate.familyCardNumber === "string"
-          ? candidate.familyCardNumber
-          : typeof nestedUser?.familyCardNumber === "string"
-            ? nestedUser.familyCardNumber
-            : undefined,
-      sector:
-        typeof candidate.sector === "string"
-          ? candidate.sector
-          : typeof nestedUser?.sector === "string"
-            ? nestedUser.sector
-            : undefined,
-      joinDate:
-        typeof candidate.joinDate === "string"
-          ? candidate.joinDate
-          : typeof nestedUser?.joinDate === "string"
-            ? nestedUser.joinDate
-            : undefined,
-      passwordHash:
-        typeof candidate.passwordHash === "string"
-          ? candidate.passwordHash
-          : typeof nestedUser?.passwordHash === "string"
-            ? nestedUser.passwordHash
-            : undefined,
-    };
-  }
-
-  return null;
+  return {
+    id,
+    fullName,
+    gender:
+      asString(candidate.gender) ??
+      asString(candidate.Gender) ??
+      asString(nestedUser?.gender) ??
+      asString(nestedUser?.Gender),
+    dateOfBirth:
+      asString(candidate.dateOfBirth) ??
+      asString(candidate.DateOfBirth) ??
+      asString(candidate.dateofbirth) ??
+      asString(candidate.dateOfBirth) ??
+      asString(nestedUser?.dateOfBirth) ??
+      asString(nestedUser?.DateOfBirth) ??
+      asString(nestedUser?.dateofbirth),
+    phoneNumber:
+      asString(candidate.phoneNumber) ??
+      asString(candidate.PhoneNumber) ??
+      asString(candidate.phone) ??
+      asString(nestedUser?.phoneNumber) ??
+      asString(nestedUser?.PhoneNumber) ??
+      asString(nestedUser?.phone),
+    email,
+    role,
+    address:
+      asString(candidate.address) ??
+      asString(candidate.Address) ??
+      asString(nestedUser?.address) ??
+      asString(nestedUser?.Address),
+    maritalStatus:
+      asString(candidate.maritalStatus) ??
+      asString(candidate.MaritalStatus) ??
+      asString(nestedUser?.maritalStatus) ??
+      asString(nestedUser?.MaritalStatus),
+    familyCardNumber:
+      asString(candidate.familyCardNumber) ??
+      asString(candidate.FamilyCardNumber) ??
+      asString(nestedUser?.familyCardNumber) ??
+      asString(nestedUser?.FamilyCardNumber),
+    congregationId:
+      asString(candidate.congregationId) ??
+      asString(candidate.CongregationId) ??
+      asString(nestedUser?.congregationId) ??
+      asString(nestedUser?.CongregationId),
+    congregationName:
+      asString(candidate.congregationName) ??
+      asString(candidate.CongregationName) ??
+      asString(nestedUser?.congregationName) ??
+      asString(nestedUser?.CongregationName),
+    joinDate:
+      asString(candidate.joinDate) ??
+      asString(candidate.JoinDate) ??
+      asString(nestedUser?.joinDate) ??
+      asString(nestedUser?.JoinDate),
+    photo:
+      asString(candidate.photo) ??
+      asString(candidate.Photo) ??
+      asString(candidate.avatar) ??
+      asString(candidate.Avatar) ??
+      asString(nestedUser?.photo) ??
+      asString(nestedUser?.Photo),
+    username,
+    passwordHash:
+      asString(candidate.passwordHash) ??
+      asString(candidate.PasswordHash) ??
+      asString(nestedUser?.passwordHash) ??
+      asString(nestedUser?.PasswordHash),
+  };
 }
 
 function safeParseAuthUser(raw: string | null): AuthUser | null {
   if (!raw) return null;
 
   try {
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    return normalizeAuthUser(parsed);
+    return normalizeAuthUser(JSON.parse(raw));
   } catch {
     return null;
   }
@@ -263,7 +232,8 @@ export async function login(
     } else if (!response.ok) {
       return {
         success: false,
-        message: fallbackErrorMessage || "Login gagal. Periksa kembali data Anda.",
+        message:
+          fallbackErrorMessage || "Login gagal. Periksa kembali data Anda.",
       };
     }
 
@@ -288,8 +258,8 @@ export async function login(
 
     return {
       success: Boolean(data.success),
-      data: normalizedUser ?? undefined,
       user: normalizedUser ?? undefined,
+      data: normalizedUser ?? undefined,
       message: data.message || "Login successful.",
     };
   } catch (error) {

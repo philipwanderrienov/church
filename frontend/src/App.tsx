@@ -12,6 +12,7 @@ import Organization from "./pages/Organization";
 import Statistics from "./pages/Statistics";
 import Finance from "./pages/Finance";
 import PrayerRequests from "./pages/PrayerRequests";
+import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
 import { getAuthUser, type AuthUser } from "./lib/auth";
 
@@ -28,7 +29,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function RootRedirect() {
-  const [authUser, setAuthUser] = useState<AuthUser | null>(() => readAuthUser());
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() =>
+    readAuthUser(),
+  );
 
   useEffect(() => {
     const syncAuth = () => {
@@ -88,6 +91,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Congregations />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <Users />
               </ProtectedRoute>
             }
           />

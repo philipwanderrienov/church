@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, Input } from "@angular/core";
+import { RouterLink, RouterLinkActive } from "@angular/router";
 
 @Component({
-  selector: 'app-nav-link',
+  selector: "app-nav-link",
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   template: `
@@ -17,8 +17,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   `,
 })
 export class NavLinkComponent {
-  @Input() to = '/';
-  @Input() className = '';
-  @Input() activeClassName = '';
+  @Input() to = "/";
+  @Input() className = "";
+  @Input() activeClassName = "";
   @Input() exact = false;
 }

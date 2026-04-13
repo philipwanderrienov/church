@@ -2,6 +2,7 @@ import { ArrowRight, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 export default function DashboardCongregationOverview() {
   return (
@@ -14,11 +15,14 @@ export default function DashboardCongregationOverview() {
           </p>
         </div>
         <Button
+          asChild
           variant="ghost"
           className="gap-2 text-sm text-slate-600 hover:bg-slate-100"
         >
-          Lihat Detail
-          <ArrowRight className="h-4 w-4" />
+          <Link to="/users">
+            Lihat Detail
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 pt-4">
