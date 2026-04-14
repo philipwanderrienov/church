@@ -5,28 +5,28 @@
       "name": "Debug Backend (.NET)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build-backend",
-      "program": "${workspaceFolder}/backend/src/Church.Api/bin/Debug/net8.0/Church.Api.dll",
+      "preLaunchTask": "backend-start",
+      "program": "${workspaceFolder}/backend/Church.Api/bin/Debug/net10.0/Church.Api.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/backend/src/Church.Api",
+      "cwd": "${workspaceFolder}/backend/Church.Api",
       "stopAtEntry": false,
       "serverReadyAction": {
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
-        "uriFormat": "%s/swagger",
+        "pattern": "\\bNow listening on:\\s+(http://\\S+)",
+        "uriFormat": "%s/index.html",
         "action": "openExternally"
       },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5080"
+        "ASPNETCORE_URLS": "http://localhost:8000"
       }
     },
     {
       "name": "Debug Angular",
       "type": "pwa-chrome",
       "request": "launch",
-      "preLaunchTask": "start-angular",
-      "url": "http://localhost:4200",
-      "webRoot": "${workspaceFolder}/frontend/src"
+      "preLaunchTask": "start-frontend",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}/frontend/angular-app/src"
     }
   ],
   "compounds": [

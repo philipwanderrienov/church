@@ -6,7 +6,7 @@ import { AuthUser, LoginResponse } from "../models/auth.model";
 
 const CURRENT_USER_KEY = "church_current_user";
 const APP_ROLE_KEY = "church_app_role";
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "http://localhost:8000";
 const LOGIN_PATH = `${API_BASE_URL}/api/v1/congregations/auth/login`;
 
 @Injectable({
@@ -32,7 +32,7 @@ export class AuthService {
   async login(identifier: string, password: string): Promise<LoginResponse> {
     try {
       const response = await firstValueFrom(
-        this.http.post<ApiResponse<unknown>>(
+        this.http.post<ApiResponse<AuthUser>>(
           LOGIN_PATH,
           { identifier, password },
           {
@@ -40,14 +40,11 @@ export class AuthService {
               "Content-Type": "application/json",
               Accept: "application/json",
             }),
-            responseType: "json",
           },
         ),
       );
 
-      const user = this.normalizeUser(
-        (response as { user?: unknown; data?: unknown }).user ?? response.data,
-      );
+      const user = this.normalizeUser(response.data);
       if (user) {
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
         this.userSubject.next(user);
@@ -56,9 +53,8 @@ export class AuthService {
       return {
         success: Boolean(response.success),
         data: user ?? undefined,
-        user: user ?? undefined,
         message: response.message || "Login successful.",
-      } as LoginResponse;
+      };
     } catch (error: any) {
       const message =
         error?.error?.message ||
@@ -67,7 +63,7 @@ export class AuthService {
       return {
         success: false,
         message,
-      } as LoginResponse;
+      };
     }
   }
 
@@ -99,64 +95,23 @@ export class AuthService {
       return null;
     }
 
-    const candidate = user as {
-      id?: unknown;
-      name?: unknown;
-      fullName?: unknown;
-      email?: unknown;
-      username?: unknown;
-      role?: unknown;
-      avatar?: unknown;
-      gender?: unknown;
-      dateofbirth?: unknown;
-      phone?: unknown;
-      address?: unknown;
-      maritalStatus?: unknown;
-      familyCardNumber?: unknown;
-      sector?: unknown;
-      joinDate?: unknown;
-      photo?: unknown;
-      passwordHash?: unknown;
-      user?: unknown;
-    };
+    const candidate = user as Record<string, unknown>;
 
-    const nestedUser =
-      candidate["user"] && typeof candidate["user"] === "object"
-        ? (candidate["user"] as Record<string, unknown>)
-        : undefined;
-
-    const role =
-      this.normalizeRole(candidate["role"]) ??
-      this.normalizeRole(nestedUser?.["role"]);
-
-    const id =
-      typeof candidate["id"] === "string"
-        ? candidate["id"]
-        : typeof nestedUser?.["id"] === "string"
-          ? nestedUser["id"]
-          : undefined;
+    const id = typeof candidate["id"] === "string" ? candidate["id"] : undefined;
     const fullName =
-      typeof candidate["name"] === "string"
-        ? candidate["name"]
-        : typeof candidate["fullName"] === "string"
-          ? candidate["fullName"]
-          : typeof nestedUser?.["name"] === "string"
-            ? nestedUser["name"]
-            : typeof nestedUser?.["fullName"] === "string"
-              ? nestedUser["fullName"]
-              : undefined;
-    const email =
-      typeof candidate["email"] === "string"
-        ? candidate["email"]
-        : typeof nestedUser?.["email"] === "string"
-          ? nestedUser["email"]
+      typeof candidate["fullName"] === "string"
+        ? candidate["fullName"]
+        : typeof candidate["name"] === "string"
+          ? candidate["name"]
           : undefined;
+    const email =
+      typeof candidate["email"] === "string" ? candidate["email"] : undefined;
     const username =
       typeof candidate["username"] === "string"
         ? candidate["username"]
-        : typeof nestedUser?.["username"] === "string"
-          ? nestedUser["username"]
-          : undefined;
+        : undefined;
+    const role =
+      typeof candidate["role"] === "string" ? candidate["role"] : undefined;
 
     if (!id || !fullName || !email || !username || !role) {
       return null;
@@ -171,71 +126,49 @@ export class AuthService {
       gender:
         typeof candidate["gender"] === "string"
           ? candidate["gender"]
-          : typeof nestedUser?.["gender"] === "string"
-            ? nestedUser["gender"]
+          : undefined,
+      dateOfBirth:
+        typeof candidate["dateOfBirth"] === "string"
+          ? candidate["dateOfBirth"]
+          : typeof candidate["dateofbirth"] === "string"
+            ? candidate["dateofbirth"]
             : undefined,
-      dateofbirth:
-        typeof candidate["dateofbirth"] === "string"
-          ? candidate["dateofbirth"]
-          : typeof nestedUser?.["dateofbirth"] === "string"
-            ? nestedUser["dateofbirth"]
-            : undefined,
-      phone:
-        typeof candidate["phone"] === "string"
-          ? candidate["phone"]
-          : typeof nestedUser?.["phone"] === "string"
-            ? nestedUser["phone"]
+      phoneNumber:
+        typeof candidate["phoneNumber"] === "string"
+          ? candidate["phoneNumber"]
+          : typeof candidate["phone"] === "string"
+            ? candidate["phone"]
             : undefined,
       address:
-        typeof candidate["address"] === "string"
-          ? candidate["address"]
-          : typeof nestedUser?.["address"] === "string"
-            ? nestedUser["address"]
-            : undefined,
+        typeof candidate["address"] === "string" ? candidate["address"] : undefined,
       maritalStatus:
         typeof candidate["maritalStatus"] === "string"
           ? candidate["maritalStatus"]
-          : typeof nestedUser?.["maritalStatus"] === "string"
-            ? nestedUser["maritalStatus"]
-            : undefined,
+          : undefined,
       familyCardNumber:
         typeof candidate["familyCardNumber"] === "string"
           ? candidate["familyCardNumber"]
-          : typeof nestedUser?.["familyCardNumber"] === "string"
-            ? nestedUser["familyCardNumber"]
-            : undefined,
+          : undefined,
       sector:
-        typeof candidate["sector"] === "string"
-          ? candidate["sector"]
-          : typeof nestedUser?.["sector"] === "string"
-            ? nestedUser["sector"]
-            : undefined,
+        typeof candidate["sector"] === "string" ? candidate["sector"] : undefined,
       joinDate:
         typeof candidate["joinDate"] === "string"
           ? candidate["joinDate"]
-          : typeof nestedUser?.["joinDate"] === "string"
-            ? nestedUser["joinDate"]
-            : undefined,
+          : undefined,
       photo:
-        typeof candidate["photo"] === "string"
-          ? candidate["photo"]
-          : typeof candidate["avatar"] === "string"
-            ? candidate["avatar"]
-            : typeof nestedUser?.["photo"] === "string"
-              ? nestedUser["photo"]
-              : undefined,
+        typeof candidate["photo"] === "string" ? candidate["photo"] : undefined,
       passwordHash:
         typeof candidate["passwordHash"] === "string"
           ? candidate["passwordHash"]
-          : typeof nestedUser?.["passwordHash"] === "string"
-            ? nestedUser["passwordHash"]
-            : undefined,
+          : undefined,
+      congregationId:
+        typeof candidate["congregationId"] === "string"
+          ? candidate["congregationId"]
+          : undefined,
+      congregationName:
+        typeof candidate["congregationName"] === "string"
+          ? candidate["congregationName"]
+          : undefined,
     };
-  }
-
-  private normalizeRole(role: unknown): string | null {
-    return typeof role === "string" && role.trim().length > 0
-      ? role.trim()
-      : null;
   }
 }

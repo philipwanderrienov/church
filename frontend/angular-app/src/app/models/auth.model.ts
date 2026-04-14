@@ -5,8 +5,8 @@ export interface AuthUser {
   username: string;
   role: string;
   gender?: string;
-  dateofbirth?: string;
-  phone?: string;
+  dateOfBirth?: string;
+  phoneNumber?: string;
   address?: string;
   maritalStatus?: string;
   familyCardNumber?: string;
@@ -14,11 +14,12 @@ export interface AuthUser {
   joinDate?: string;
   photo?: string;
   passwordHash?: string;
+  congregationId?: string;
+  congregationName?: string;
 }
 
 export interface LoginResponse {
   success: boolean;
   message?: string;
   data?: AuthUser;
-  user?: AuthUser;
 }
