@@ -1,14 +1,18 @@
+using Church.Api.Helpers;
 using Church.Api.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Church.Api.Services;
 
 public sealed class AuthService : IAuthService
 {
     private readonly IAuthRepository _authRepository;
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(IAuthRepository authRepository)
+    public AuthService(IAuthRepository authRepository, ILogger<AuthService> logger)
     {
         _authRepository = authRepository;
+        _logger = logger;
     }
 
     public async Task<(bool Success, object? User, string Message)> LoginAsync(string identifier, string password, CancellationToken cancellationToken)
@@ -30,7 +34,8 @@ public sealed class AuthService : IAuthService
             return (false, null, "Akun belum memiliki password.");
         }
 
-        var passwordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        // var passwordValid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
+        var passwordValid = SecurePasswordHasher.Verify(password, user.PasswordHash);
 
         if (!passwordValid)
         {

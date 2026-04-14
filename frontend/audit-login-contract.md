@@ -51,6 +51,7 @@ or:
 ```
 
 Failure responses are expected to be JSON with:
+
 - `success: false`
 - `message` describing the error
 

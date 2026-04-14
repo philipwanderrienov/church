@@ -33,6 +33,13 @@ import { AuthService } from "../services/auth.service";
         <div class="navbar__actions" *ngIf="currentUser">
           <div class="navbar__user">
             <div class="navbar__user-name">{{ currentUser.fullName }}</div>
+            <div class="navbar__user-meta">
+              <span *ngIf="currentUser.username">{{ currentUser.username }}</span>
+              <span *ngIf="currentUser.congregationName">
+                {{ currentUser.congregationName }}
+              </span>
+              <span *ngIf="currentUser.phoneNumber">{{ currentUser.phoneNumber }}</span>
+            </div>
             <div class="navbar__user-role">
               {{ roleText || currentUser.role }}
             </div>

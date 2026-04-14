@@ -3,7 +3,7 @@ export interface Congregant {
   fullName: string;
   gender: "Male" | "Female";
   dateOfBirth: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   address: string;
   maritalStatus: "Single" | "Married" | "Widowed" | "Divorced";
@@ -24,7 +24,7 @@ export const createEmptyCongregant = (): Omit<Congregant, "id"> => ({
   fullName: "",
   gender: "Male",
   dateOfBirth: "",
-  phone: "",
+  phoneNumber: "",
   email: "",
   address: "",
   maritalStatus: "Single",
